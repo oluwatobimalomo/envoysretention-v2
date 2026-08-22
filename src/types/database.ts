@@ -182,6 +182,48 @@ export interface Database {
         };
         Relationships: [];
       };
+      potential_envoys: {
+        Row: {
+          id: string; full_name: string; phone: string; gender: string | null;
+          original_first_timer_id: string | null; training_completed: boolean;
+          training_completed_date: string | null; training_notes: string | null;
+          promoted_to_membership: boolean; created_at: string; updated_at: string;
+        };
+        Insert: {
+          id?: string; full_name: string; phone: string; gender?: string | null;
+          original_first_timer_id?: string | null; training_completed?: boolean;
+          training_completed_date?: string | null; training_notes?: string | null;
+          promoted_to_membership?: boolean;
+        };
+        Update: {
+          training_completed?: boolean; training_completed_date?: string | null;
+          training_notes?: string | null; promoted_to_membership?: boolean;
+        };
+        Relationships: [];
+      };
+      potential_envoys_assignments: {
+        Row: { id: string; potential_envoy_id: string; assigned_to: string; assigned_by: string | null; assigned_at: string; };
+        Insert: { id?: string; potential_envoy_id: string; assigned_to: string; assigned_by?: string | null; };
+        Update: { assigned_to?: string; };
+        Relationships: [];
+      };
+      potential_envoys_feedback: {
+        Row: {
+          id: string; potential_envoy_id: string; week_number: number; call_status: string;
+          notes: string | null; follow_up_date: string | null; caller_name: string | null; caller_id: string | null;
+          flagged_for_pastoral: boolean; flag_reason: string | null; created_at: string; updated_at: string;
+        };
+        Insert: {
+          id?: string; potential_envoy_id: string; week_number: number; call_status: string;
+          notes?: string | null; follow_up_date?: string | null; caller_name?: string | null; caller_id?: string | null;
+          flagged_for_pastoral?: boolean; flag_reason?: string | null;
+        };
+        Update: {
+          call_status?: string; notes?: string | null; follow_up_date?: string | null;
+          flagged_for_pastoral?: boolean; flag_reason?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

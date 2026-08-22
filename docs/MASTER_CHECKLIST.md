@@ -33,9 +33,13 @@ Also simplified vs. V1 (noted, not hidden):
 - No analytics/chart dashboards yet for `/experience/dashboard`, `/reports` — Recharts-based reporting is its own module (13)
 - Experience/Soul Care "leaderboard" and weekly-trend widgets from V1's `Report`/`ExperienceAnalyticsDashboard` not yet ported
 
+## ✅ Module 6 — Potential Envoys — DONE
+- [x] SQL `0007_potential_envoys.sql`: `potential_envoys`, `potential_envoys_assignments`, `potential_envoys_feedback` (5-week pipeline) + RLS
+- [x] `/soul-care/potential-envoys` — assign (bulk + individual), filter tabs (unassigned/assigned/active/graduated), stat cards
+- [x] `/soul-care/my-potential-envoys` — 5-week progress indicator, Log Feedback dialog, training-completion checkbox, "Promote to Membership" button (unlocked once 5 weeks + training are both complete, matching V1)
+
 ## Remaining modules (build order)
 - Module 5b — Membership Records: `church_members` table, Stewards Care, Members Care, Care Priority List, VIP Journey Dashboard
-- Module 6 — Potential Envoys
 - Module 7 — New Converts: registry, assign, QR, retention report
 - Module 8 — Megastars: check-in/out, services, roster
 - Module 9 — Research & Feedback
@@ -49,4 +53,4 @@ Also simplified vs. V1 (noted, not hidden):
 - Module 17 — Cross-cutting: PWA/service worker parity, Storybook, Vitest, Playwright, CI
 
 ## Next task
-Module 6 — Potential Envoys (the 5-week post-membership track referenced by V1's `potential_envoys` / `potential_envoys_feedback` tables).
+Module 7 — New Converts (registry, assign, QR self-registration, retention report). Same shape as First-Timers + Call Pipeline, adapted to a monthly check-in cadence instead of weekly.
