@@ -336,6 +336,18 @@ export interface Database {
         };
         Relationships: [];
       };
+      feedback_submissions: {
+        Row: {
+          id: string; name: string | null; gender: string | null; phone: string | null;
+          membership_status: string | null; focus_points: string[]; feedback: string; submitted_at: string;
+        };
+        Insert: {
+          id?: string; name?: string | null; gender?: string | null; phone?: string | null;
+          membership_status?: string | null; focus_points?: string[]; feedback: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

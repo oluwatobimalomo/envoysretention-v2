@@ -94,5 +94,17 @@ Prompted by a direct comparison against V1's actual login screen, which surfaced
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 58 routes
 - Note: `/register` and `/register-convert` (the public First-Timer/New-Convert forms) still use the earlier centered-card style, not yet brought in line with the new login treatment
 
+## ✅ Module 9 — Research & Feedback — DONE
+- [x] SQL `0011_feedback_submissions.sql`: `feedback_submissions` table + RLS (public insert, staff select) — `/feedback` and `/feedback/flagged` reuse the existing `call_feedback` table from Module 3, no new table needed there
+- [x] `/give-feedback` — public, optionally-anonymous feedback form (name/gender/phone optional, membership status + focus points + feedback required)
+- [x] `/research/feedback` ("VIPs Feedback") — merges First-Timer form feedback + public Feedback QR submissions, exactly like V1's `ResearchFeedback`
+- [x] `/research/general-feedback` — public Feedback QR submissions only, same list UI
+- [x] `/research/qr` — QR code linking to `/give-feedback`
+- [x] `/feedback` ("All Feedback") — every call note logged during the Experience Team's 3-week pipeline
+- [x] `/feedback/flagged` — pastoral escalations from call feedback, with 3+ day aging indicator
+- [x] Row-selection + CSV export on both research feedback views (select-then-download, matching V1's UX)
+- [x] This fixes the **Research** role's broken landing page — was one of the 4 roles landing on a bare "Coming Soon" screen, now lands on a real, working page
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 59 routes
+
 ## Next task
-Module 9 — Research & Feedback (`/research/feedback`, `/research/general-feedback`, `/research/qr`, `/feedback`, `/feedback/flagged`) — also fixes the Research role's landing page, which currently still lands on a placeholder.
+Module 10 — Testimonies (`/testimonies`, `/testimonies/bank`, `/testimonies/qr`) — also fixes the Testimony Team role's landing page, one of the remaining 3 roles still on "Coming Soon."
