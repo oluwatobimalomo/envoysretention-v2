@@ -1,11 +1,4 @@
--- ============================================================================
--- 0008_new_converts.sql
--- Module 7: New Converts — registry of people who gave their life to
--- Christ or rededicated, tracked over 3 monthly check-ins, with training
--- completion, plus a public self-registration form (like First-Timers).
--- Ported from V1's new_converts / new_converts_checkins / new_converts_assignments.
--- ============================================================================
-
+-- Module 7: New Converts 
 create table public.new_converts (
   id uuid primary key default gen_random_uuid(),
   full_name text not null,

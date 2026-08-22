@@ -1,9 +1,4 @@
--- ============================================================================
--- 0007_potential_envoys.sql
--- Module 6: Potential Envoys — the 5-week post-membership track for people
--- recommended for membership in their VIP Retention Overview. Ported from
--- V1's potential_envoys / potential_envoys_feedback / potential_envoys_assignments.
--- ============================================================================
+-- Module 6: Potential Envoys
 
 create table public.potential_envoys (
   id uuid primary key default gen_random_uuid(),

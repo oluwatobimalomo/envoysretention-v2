@@ -1,12 +1,4 @@
--- ============================================================================
--- 0009_megastars.sql
--- Module 8: Megastars — children's ministry: guardians, children, guardian
--- links (many-to-many, since a child can have multiple guardians and a
--- guardian multiple children), services (a service must be "Open" before
--- check-in can happen), and check-ins/outs.
--- Ported from V1's megastars / megastar_guardians / megastar_guardian_links
--- / megastar_services / megastar_checkins.
--- ============================================================================
+-- Module 8: Megastars
 
 create table public.megastar_guardians (
   id uuid primary key default gen_random_uuid(),

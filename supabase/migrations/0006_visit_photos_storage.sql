@@ -1,9 +1,4 @@
--- ============================================================================
--- 0006_visit_photos_storage.sql
--- Storage bucket for Soul Care visit photos (V1 uploaded these directly
--- to a public bucket via the anon key; V2 scopes uploads/reads to Soul
--- Care roles via RLS on storage.objects instead).
--- ============================================================================
+-- Storage bucket for Soul Care visit photos
 
 insert into storage.buckets (id, name, public)
 values ('visit-photos', 'visit-photos', true)
