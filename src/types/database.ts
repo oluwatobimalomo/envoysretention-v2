@@ -224,6 +224,50 @@ export interface Database {
         };
         Relationships: [];
       };
+      new_converts: {
+        Row: {
+          id: string; full_name: string; phone: string; gender: string | null;
+          conversion_type: string; conversion_date: string; source: string; added_by: string | null;
+          envoys_training_completed: boolean; envoys_training_completed_date: string | null;
+          training_scheduled_date: string | null; trainer_name: string | null; envoys_training_notes: string | null;
+          is_active: boolean; created_at: string; updated_at: string;
+        };
+        Insert: {
+          id?: string; full_name: string; phone: string; gender?: string | null;
+          conversion_type?: string; conversion_date?: string; source?: string; added_by?: string | null;
+          envoys_training_completed?: boolean; envoys_training_completed_date?: string | null;
+          training_scheduled_date?: string | null; trainer_name?: string | null; envoys_training_notes?: string | null;
+          is_active?: boolean;
+        };
+        Update: {
+          envoys_training_completed?: boolean; envoys_training_completed_date?: string | null;
+          training_scheduled_date?: string | null; trainer_name?: string | null; envoys_training_notes?: string | null;
+        };
+        Relationships: [];
+      };
+      new_converts_assignments: {
+        Row: { id: string; new_convert_id: string; assigned_to: string; assigned_by: string | null; assigned_at: string; };
+        Insert: { id?: string; new_convert_id: string; assigned_to: string; assigned_by?: string | null; };
+        Update: { assigned_to?: string; };
+        Relationships: [];
+      };
+      new_converts_checkins: {
+        Row: {
+          id: string; new_convert_id: string; checkin_number: number; call_status: string;
+          notes: string | null; follow_up_date: string | null; caller_name: string | null; caller_id: string | null;
+          flagged_for_pastoral: boolean; flag_reason: string | null; created_at: string; updated_at: string;
+        };
+        Insert: {
+          id?: string; new_convert_id: string; checkin_number: number; call_status: string;
+          notes?: string | null; follow_up_date?: string | null; caller_name?: string | null; caller_id?: string | null;
+          flagged_for_pastoral?: boolean; flag_reason?: string | null;
+        };
+        Update: {
+          call_status?: string; notes?: string | null; follow_up_date?: string | null;
+          flagged_for_pastoral?: boolean; flag_reason?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

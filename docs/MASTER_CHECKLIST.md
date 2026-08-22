@@ -63,5 +63,16 @@ All 7 confirmed gaps fixed and verified:
 - [x] Soul Care CSV bulk import (`/soul-care/import`), mirroring the First-Timers import pattern
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 55 routes
 
+## ✅ Module 7 — New Converts — DONE
+- [x] SQL `0008_new_converts.sql`: `new_converts`, `new_converts_assignments`, `new_converts_checkins` (3-month track) + RLS, including a public insert-only policy for self-registration
+- [x] `/new-converts` — registry with search, date filter, CSV export, gender-tagged rows, conversion-type badges
+- [x] `/new-converts/new` — add form (admin/dofficer/soulcareadmin), live duplicate-phone check
+- [x] `/new-converts/assign` — assign/reassign/unassign (bulk + individual), CSV export
+- [x] `/new-converts/mine` — assigned list, clickable month badges for logging/editing check-ins, training-completion checkbox
+- [x] `/new-converts/qr` — QR code linking to the public form
+- [x] `/new-converts/report` — retention snapshot (counts + rates; full chart-based analytics deferred to Module 13, noted on the page itself)
+- [x] `/register-convert` — public, unauthenticated self-registration (added to middleware's public routes)
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 57 routes
+
 ## Next task
-Module 7 — New Converts (registry, assign, QR self-registration, retention report).
+Module 8 — Megastars (check-in/out, services, roster).
