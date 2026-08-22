@@ -268,6 +268,58 @@ export interface Database {
         };
         Relationships: [];
       };
+      megastar_guardians: {
+        Row: { id: string; full_name: string; phone: string; added_by: string | null; created_at: string; };
+        Insert: { id?: string; full_name: string; phone: string; added_by?: string | null; };
+        Update: { full_name?: string; phone?: string; };
+        Relationships: [];
+      };
+      megastars: {
+        Row: {
+          id: string; full_name: string; gender: string | null; dob: string | null; class: string | null;
+          is_active: boolean; removed_reason: string | null; removed_at: string | null;
+          added_by: string | null; created_at: string;
+        };
+        Insert: {
+          id?: string; full_name: string; gender?: string | null; dob?: string | null; class?: string | null;
+          is_active?: boolean; added_by?: string | null;
+        };
+        Update: {
+          full_name?: string; gender?: string | null; dob?: string | null; class?: string | null;
+          is_active?: boolean; removed_reason?: string | null; removed_at?: string | null;
+        };
+        Relationships: [];
+      };
+      megastar_guardian_links: {
+        Row: { id: string; megastar_id: string; guardian_id: string; relationship: string | null; };
+        Insert: { id?: string; megastar_id: string; guardian_id: string; relationship?: string | null; };
+        Update: { relationship?: string | null; };
+        Relationships: [];
+      };
+      megastar_services: {
+        Row: {
+          id: string; label: string; service_date: string; status: string;
+          created_by: string | null; closed_at: string | null; created_at: string;
+        };
+        Insert: { id?: string; label: string; service_date?: string; status?: string; created_by?: string | null; };
+        Update: { status?: string; closed_at?: string | null; };
+        Relationships: [];
+      };
+      megastar_checkins: {
+        Row: {
+          id: string; service_id: string; megastar_id: string; guardian_id: string;
+          class_at_checkin: string | null; checked_in_by: string | null; check_in_time: string;
+          check_out_time: string | null; checked_out_by: string | null; checkout_guardian_id: string | null;
+        };
+        Insert: {
+          id?: string; service_id: string; megastar_id: string; guardian_id: string;
+          class_at_checkin?: string | null; checked_in_by?: string | null;
+        };
+        Update: {
+          check_out_time?: string | null; checked_out_by?: string | null; checkout_guardian_id?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

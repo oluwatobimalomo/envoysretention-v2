@@ -74,5 +74,13 @@ All 7 confirmed gaps fixed and verified:
 - [x] `/register-convert` — public, unauthenticated self-registration (added to middleware's public routes)
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 57 routes
 
+## ✅ Module 8 — Megastars — DONE
+- [x] SQL `0009_megastars.sql`: `megastars` (children), `megastar_guardians`, `megastar_guardian_links` (many-to-many — a child can have multiple guardians, a guardian multiple children), `megastar_services`, `megastar_checkins` + RLS
+- [x] `/megastars/services` — open/close services (check-in only works while a service is Open, matching V1)
+- [x] `/megastars/check-in-out` — front-desk flow: live family search by guardian phone/name or child's name, multi-select check-in, check-out list with search, CSV attendance export
+- [x] `/megastars/roster` — searchable/filterable-by-class roster, age calculated from DOB, "consider promoting class" hint, soft-remove with reason + restore, Add Megastar dialog (existing-guardian lookup or new-guardian registration)
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 57 routes
+- Note: V1's roster CSV bulk import (guardian+child+link in one row) not yet ported — flagged for a follow-up pass, not silently dropped
+
 ## Next task
-Module 8 — Megastars (check-in/out, services, roster).
+Module 9 — Research & Feedback (`/research/feedback`, `/research/general-feedback`, `/research/qr`, `/feedback`, `/feedback/flagged`).
