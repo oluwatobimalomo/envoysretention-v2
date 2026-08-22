@@ -82,5 +82,17 @@ All 7 confirmed gaps fixed and verified:
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 57 routes
 - Note: V1's roster CSV bulk import (guardian+child+link in one row) not yet ported — flagged for a follow-up pass, not silently dropped
 
+## ✅ Login redesign + Module 12 (partial) — Access Requests & User Management — DONE
+Prompted by a direct comparison against V1's actual login screen, which surfaced a real gap: V1 has a self-service "Request Access → admin approves" flow that V2 was completely missing — meaning there was no way to create staff logins in V2 at all except by hand in the Supabase dashboard.
+- [x] SQL `0010_access_requests.sql`: `access_requests` table + RLS (public insert, admin-only read/review)
+- [x] `src/lib/supabase/admin.ts`: service-role client, used only for the one operation that genuinely needs it — creating real Supabase Auth users
+- [x] `/request-access` — public form (name, email, phone, requested team, optional message)
+- [x] `/admin/users` — real page (was a placeholder): pending-requests queue with Approve/Deny, full team member list with role change + activate/deactivate
+- [x] `/admin/users/new` — real page (was a placeholder): direct admin-created account, no approval step
+- [x] Approving a request or creating a user directly generates a temporary password and creates the real Supabase Auth login on the spot (via `admin.auth.admin.createUser` + the existing `handle_new_user` trigger, which auto-populates `profiles`) — shown once to the admin to hand off securely
+- [x] Login page redesigned: split-screen, editorial quote treatment (not literal V1 copy, not floating fake-stat cards) + the "New team member? Request access" link restored
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 58 routes
+- Note: `/register` and `/register-convert` (the public First-Timer/New-Convert forms) still use the earlier centered-card style, not yet brought in line with the new login treatment
+
 ## Next task
-Module 9 — Research & Feedback (`/research/feedback`, `/research/general-feedback`, `/research/qr`, `/feedback`, `/feedback/flagged`).
+Module 9 — Research & Feedback (`/research/feedback`, `/research/general-feedback`, `/research/qr`, `/feedback`, `/feedback/flagged`) — also fixes the Research role's landing page, which currently still lands on a placeholder.

@@ -320,6 +320,22 @@ export interface Database {
         };
         Relationships: [];
       };
+      access_requests: {
+        Row: {
+          id: string; full_name: string; email: string; phone: string | null;
+          requested_role: AppRole; message: string | null; status: string;
+          reviewed_by: string | null; reviewed_at: string | null; denial_reason: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string; full_name: string; email: string; phone?: string | null;
+          requested_role: AppRole; message?: string | null;
+        };
+        Update: {
+          status?: string; reviewed_by?: string | null; reviewed_at?: string | null; denial_reason?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
