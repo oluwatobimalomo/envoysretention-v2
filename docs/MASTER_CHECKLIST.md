@@ -106,5 +106,15 @@ Prompted by a direct comparison against V1's actual login screen, which surfaced
 - [x] This fixes the **Research** role's broken landing page — was one of the 4 roles landing on a bare "Coming Soon" screen, now lands on a real, working page
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 59 routes
 
+## ✅ Module 10 — Testimonies — DONE
+- [x] SQL `0012_public_testimonies.sql`: `public_testimonies` table + RLS — `/testimonies` itself reuses the existing `soul_care_visits.testimony` field from Module 5, no new table needed there
+- [x] `/share-testimony` — public, optionally-anonymous testimony form (name optional, category, testimony)
+- [x] `/testimonies` — testimonies shared during Soul Care visitations, search + date filter, select-then-export CSV
+- [x] `/testimonies/bank` — public Testimony QR submissions, same list UX plus a category filter
+- [x] `/testimonies/qr` — QR code linking to `/share-testimony`
+- [x] This fixes the **Testimony Team** role's broken landing page — 2 of the original 4 "Coming Soon" roles now fixed (Research, Testimony Team); Connect Centre remains
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 60 routes
+- Note: V1's full-screen "Testimony Projector" (pulpit reader with persisted navigation state, dynamic font sizing) not ported — flagged as a genuine V1 feature not yet in V2, not silently dropped
+
 ## Next task
-Module 10 — Testimonies (`/testimonies`, `/testimonies/bank`, `/testimonies/qr`) — also fixes the Testimony Team role's landing page, one of the remaining 3 roles still on "Coming Soon."
+Module 11 — Connect Centre (`/connect-centre`) — the last of the 4 originally-broken role landing pages. Small module: a list of prospective members routed from the VIP Retention Overview's "Recommended Connect Center" field (Module 3).

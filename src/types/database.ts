@@ -348,6 +348,12 @@ export interface Database {
         Update: Record<string, never>;
         Relationships: [];
       };
+      public_testimonies: {
+        Row: { id: string; name: string | null; category: string; testimony: string; submitted_at: string; };
+        Insert: { id?: string; name?: string | null; category?: string; testimony: string; };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
