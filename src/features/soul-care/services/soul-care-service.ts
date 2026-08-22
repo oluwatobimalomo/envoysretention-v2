@@ -12,10 +12,15 @@ export interface EnrichedContact extends ContactRow {
 }
 
 export const soulCareService = {
-  async listEnriched(): Promise<EnrichedContact[]> {
+  async listEnriched({ search, dateFrom, dateTo }: { search?: string; dateFrom?: string; dateTo?: string } = {}): Promise<EnrichedContact[]> {
     const supabase = await createClient();
+    let contactsQuery = supabase.from("soul_care_contacts").select("*").eq("is_active", true).order("created_at", { ascending: false }).limit(1000);
+    if (search) contactsQuery = contactsQuery.or(`full_name.ilike.%${search}%,phone.ilike.%${search}%`);
+    if (dateFrom) contactsQuery = contactsQuery.gte("created_at", dateFrom);
+    if (dateTo) contactsQuery = contactsQuery.lte("created_at", `${dateTo}T23:59:59`);
+
     const [{ data: contacts, error }, { data: assignments }, { data: visits }] = await Promise.all([
-      supabase.from("soul_care_contacts").select("*").eq("is_active", true).order("created_at", { ascending: false }).limit(1000),
+      contactsQuery,
       supabase.from("soul_care_assignments").select("*, profiles!soul_care_assignments_assigned_to_fkey(full_name)"),
       supabase.from("soul_care_visits").select("*").order("created_at", { ascending: false }),
     ]);
@@ -64,6 +69,13 @@ export const soulCareService = {
     return data;
   },
 
+  async bulkImportContacts(inputs: Database["public"]["Tables"]["soul_care_contacts"]["Insert"][]) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.from("soul_care_contacts").insert(inputs).select("id");
+    if (error) throw new Error(error.message);
+    return data?.length ?? 0;
+  },
+
   async assign(contactId: string, assignedTo: string, assignedBy: string) {
     const supabase = await createClient();
     const { error } = await supabase
@@ -72,9 +84,21 @@ export const soulCareService = {
     if (error) throw new Error(error.message);
   },
 
+  async unassign(contactId: string) {
+    const supabase = await createClient();
+    const { error } = await supabase.from("soul_care_assignments").delete().eq("contact_id", contactId);
+    if (error) throw new Error(error.message);
+  },
+
   async logVisit(input: Database["public"]["Tables"]["soul_care_visits"]["Insert"]) {
     const supabase = await createClient();
     const { error } = await supabase.from("soul_care_visits").insert(input);
+    if (error) throw new Error(error.message);
+  },
+
+  async updateVisit(id: string, input: Database["public"]["Tables"]["soul_care_visits"]["Update"]) {
+    const supabase = await createClient();
+    const { error } = await supabase.from("soul_care_visits").update(input).eq("id", id);
     if (error) throw new Error(error.message);
   },
 

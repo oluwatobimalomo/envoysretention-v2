@@ -16,6 +16,17 @@ import { PipelineOverviewDialog } from "./pipeline-overview-dialog";
 
 const initialState: CallPipelineActionState & { success?: boolean; pipelineComplete?: boolean } = { error: null };
 
+export interface ExistingWeekFeedback {
+  call_status: string;
+  experience_rating: string | null;
+  returning: string | null;
+  notes: string | null;
+  follow_up_date: string | null;
+  church_attendance: string | null;
+  flagged_for_pastoral: boolean;
+  flag_reason: string | null;
+}
+
 export function LogFeedbackDialog({
   open,
   onOpenChange,
@@ -24,6 +35,7 @@ export function LogFeedbackDialog({
   week,
   callerName,
   hasExistingOverview,
+  existing,
   onLogged,
 }: {
   open: boolean;
@@ -33,19 +45,22 @@ export function LogFeedbackDialog({
   week: number;
   callerName: string;
   hasExistingOverview: boolean;
+  /** If set, the dialog opens in edit mode for a week already logged. */
+  existing?: ExistingWeekFeedback;
   onLogged: () => void;
 }) {
+  const isEditMode = !!existing;
   const action = logCallFeedbackAction.bind(null, firstTimerId, week, callerName);
   const [state, formAction, pending] = useActionState(action, initialState);
-  const [callStatus, setCallStatus] = useState("");
-  const [flagged, setFlagged] = useState(false);
+  const [callStatus, setCallStatus] = useState(existing?.call_status ?? "");
+  const [flagged, setFlagged] = useState(existing?.flagged_for_pastoral ?? false);
   const [showOverview, setShowOverview] = useState(false);
 
   useEffect(() => {
     if (!state.success) return;
     const t = setTimeout(() => {
       toast.success(`Week ${week} feedback saved.`);
-      if (state.pipelineComplete && !hasExistingOverview) {
+      if (state.pipelineComplete && !hasExistingOverview && !isEditMode) {
         setShowOverview(true);
       } else {
         onLogged();
@@ -86,7 +101,7 @@ export function LogFeedbackDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Week {week} Feedback — {firstTimerName}</DialogTitle>
+          <DialogTitle>{isEditMode ? "Edit" : ""} Week {week} Feedback — {firstTimerName}</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-1.5">
@@ -102,14 +117,14 @@ export function LogFeedbackDialog({
             <>
               <div className="space-y-1.5">
                 <Label>Experience Rating</Label>
-                <NativeSelect name="experience_rating" defaultValue="">
+                <NativeSelect name="experience_rating" defaultValue={existing?.experience_rating ?? ""}>
                   <option value="">Select rating</option>
                   {EXPERIENCE_RATING_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
                 </NativeSelect>
               </div>
               <div className="space-y-1.5">
                 <Label>Returning?</Label>
-                <NativeSelect name="returning" defaultValue="">
+                <NativeSelect name="returning" defaultValue={existing?.returning ?? ""}>
                   <option value="">Select likelihood</option>
                   {RETURNING_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </NativeSelect>
@@ -120,14 +135,14 @@ export function LogFeedbackDialog({
           {!isReached && callStatus && (
             <div className="space-y-1.5">
               <Label>Scheduled Call-back Date</Label>
-              <Input type="date" name="follow_up_date" />
+              <Input type="date" name="follow_up_date" defaultValue={existing?.follow_up_date ?? ""} />
             </div>
           )}
 
           {week >= 2 && (
             <div className="space-y-1.5">
               <Label>Church Attendance</Label>
-              <NativeSelect name="church_attendance" defaultValue="">
+              <NativeSelect name="church_attendance" defaultValue={existing?.church_attendance ?? ""}>
                 <option value="">Select</option>
                 {CHURCH_ATTENDANCE_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
               </NativeSelect>
@@ -136,7 +151,7 @@ export function LogFeedbackDialog({
 
           <div className="space-y-1.5">
             <Label>Notes</Label>
-            <Textarea name="notes" rows={3} placeholder="Key points from the conversation…" />
+            <Textarea name="notes" rows={3} placeholder="Key points from the conversation…" defaultValue={existing?.notes ?? ""} />
           </div>
 
           <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 space-y-3">
@@ -147,7 +162,7 @@ export function LogFeedbackDialog({
             </label>
             {flagged && (
               <div className="space-y-1.5">
-                <Textarea name="flag_reason" rows={2} placeholder="Describe the concern that needs pastoral attention…" />
+                <Textarea name="flag_reason" rows={2} placeholder="Describe the concern that needs pastoral attention…" defaultValue={existing?.flag_reason ?? ""} />
                 {state.fieldErrors?.flag_reason && <p className="text-xs text-destructive">{state.fieldErrors.flag_reason}</p>}
               </div>
             )}
@@ -157,7 +172,7 @@ export function LogFeedbackDialog({
 
           <Button type="submit" disabled={pending} className="w-full">
             {pending && <Loader2 className="animate-spin" />}
-            {pending ? "Saving…" : <><CheckCircle2 size={14} /> Save Week {week} Feedback</>}
+            {pending ? "Saving…" : <><CheckCircle2 size={14} /> {isEditMode ? "Update" : "Save"} Week {week} Feedback</>}
           </Button>
         </form>
       </DialogContent>

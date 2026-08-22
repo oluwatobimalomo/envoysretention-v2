@@ -6,9 +6,9 @@ import { Search, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { assignCallAction, bulkAssignCallsAction } from "../actions/call-pipeline-actions";
+import { assignCallAction, bulkAssignCallsAction, unassignCallAction } from "../actions/call-pipeline-actions";
+import { AssignmentControl } from "@/components/shared/assignment-control";
 import { genderTag, pipelineComplete, type WeekRow } from "../constants";
 import type { EnrichedFirstTimer } from "../services/call-pipeline-service";
 import { cn } from "@/lib/utils";
@@ -28,7 +28,6 @@ export function AssignCallsClient({
   const [filter, setFilter] = useState<Filter>("unassigned");
   const [bulkMember, setBulkMember] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [rowAssign, setRowAssign] = useState<Record<string, string>>({});
 
   const filtered = rows.filter((r) => {
     const matchSearch = !search || r.full_name.toLowerCase().includes(search.toLowerCase()) || r.phone.includes(search);
@@ -63,13 +62,18 @@ export function AssignCallsClient({
     });
   };
 
-  const assignOne = (id: string) => {
-    const member = rowAssign[id];
-    if (!member) return;
+  const assignOne = (id: string, memberId: string) => {
     startTransition(async () => {
-      await assignCallAction(id, member);
+      await assignCallAction(id, memberId);
       toast.success("Assigned.");
-      setRowAssign((p) => { const n = { ...p }; delete n[id]; return n; });
+      router.refresh();
+    });
+  };
+
+  const unassignOne = (id: string) => {
+    startTransition(async () => {
+      await unassignCallAction(id);
+      toast.success("Unassigned.");
       router.refresh();
     });
   };
@@ -127,21 +131,13 @@ export function AssignCallsClient({
                 <p className="text-xs text-muted-foreground">{r.phone} · Service {r.service_date}</p>
               </div>
             </label>
-            {r.assignment ? (
-              <Badge variant="secondary">Assigned to {r.assignment.assignee_name ?? "—"}</Badge>
-            ) : (
-              <div className="flex items-center gap-2">
-                <NativeSelect
-                  className="w-40"
-                  value={rowAssign[r.id] ?? ""}
-                  onChange={(e) => setRowAssign((p) => ({ ...p, [r.id]: e.target.value }))}
-                >
-                  <option value="">Assign to…</option>
-                  {teamMembers.map((m) => <option key={m.id} value={m.id}>{m.full_name}</option>)}
-                </NativeSelect>
-                <Button size="sm" variant="outline" disabled={!rowAssign[r.id] || isPending} onClick={() => assignOne(r.id)}>Save</Button>
-              </div>
-            )}
+            <AssignmentControl
+              currentAssigneeName={r.assignment?.assignee_name ?? null}
+              teamMembers={teamMembers}
+              onAssign={(memberId) => assignOne(r.id, memberId)}
+              onUnassign={r.assignment ? () => unassignOne(r.id) : undefined}
+              pending={isPending}
+            />
           </div>
         ))}
       </div>

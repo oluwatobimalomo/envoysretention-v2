@@ -2,15 +2,16 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, UserCheck, GraduationCap } from "lucide-react";
+import { Search, UserCheck, GraduationCap, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { assignPeAction, bulkAssignPeAction } from "../actions/pe-actions";
+import { assignPeAction, bulkAssignPeAction, unassignPeAction, exportPotentialEnvoysCsvAction } from "../actions/pe-actions";
 import { peComplete } from "../constants";
 import { genderTag } from "@/features/call-pipeline/constants";
+import { AssignmentControl } from "@/components/shared/assignment-control";
+import { downloadCsv } from "@/lib/csv";
 import type { EnrichedPotentialEnvoy } from "../services/potential-envoys-service";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +23,7 @@ export function AssignPeClient({ rows, teamMembers }: { rows: EnrichedPotentialE
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("unassigned");
   const [bulkMember, setBulkMember] = useState("");
-  const [rowAssign, setRowAssign] = useState<Record<string, string>>({});
+  const [exporting, setExporting] = useState(false);
 
   const filtered = rows.filter((r) => {
     const matchSearch = !search || r.full_name.toLowerCase().includes(search.toLowerCase()) || r.phone.includes(search);
@@ -45,15 +46,30 @@ export function AssignPeClient({ rows, teamMembers }: { rows: EnrichedPotentialE
     });
   };
 
-  const assignOne = (id: string) => {
-    const member = rowAssign[id];
-    if (!member) return;
+  const assignOne = (id: string, memberId: string) => {
     startTransition(async () => {
-      await assignPeAction(id, member);
+      await assignPeAction(id, memberId);
       toast.success("Assigned.");
-      setRowAssign((p) => { const n = { ...p }; delete n[id]; return n; });
       router.refresh();
     });
+  };
+
+  const unassignOne = (id: string) => {
+    startTransition(async () => {
+      await unassignPeAction(id);
+      toast.success("Unassigned.");
+      router.refresh();
+    });
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const csv = await exportPotentialEnvoysCsvAction();
+      downloadCsv(`potential-envoys-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+    } finally {
+      setExporting(false);
+    }
   };
 
   return (
@@ -71,6 +87,9 @@ export function AssignPeClient({ rows, teamMembers }: { rows: EnrichedPotentialE
           {teamMembers.map((m) => <option key={m.id} value={m.id}>{m.full_name}</option>)}
         </NativeSelect>
         <Button size="sm" onClick={bulkAssign} disabled={isPending}><UserCheck size={14} /> Bulk assign all unassigned</Button>
+        <Button size="sm" variant="outline" className="ml-auto" onClick={handleExport} disabled={exporting}>
+          <Download size={14} /> {exporting ? "Exporting…" : "Export CSV"}
+        </Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -95,17 +114,13 @@ export function AssignPeClient({ rows, teamMembers }: { rows: EnrichedPotentialE
               <p className="font-medium flex items-center gap-1.5">{r.full_name}{genderTag(r.gender)} {r.promoted_to_membership && <GraduationCap size={13} className="text-success" />}</p>
               <p className="text-xs text-muted-foreground">{r.phone}</p>
             </div>
-            {r.assignment ? (
-              <Badge variant="secondary">Assigned to {r.assignment.assignee_name ?? "—"}</Badge>
-            ) : (
-              <div className="flex items-center gap-2">
-                <NativeSelect className="w-40" value={rowAssign[r.id] ?? ""} onChange={(e) => setRowAssign((p) => ({ ...p, [r.id]: e.target.value }))}>
-                  <option value="">Assign to…</option>
-                  {teamMembers.map((m) => <option key={m.id} value={m.id}>{m.full_name}</option>)}
-                </NativeSelect>
-                <Button size="sm" variant="outline" disabled={!rowAssign[r.id] || isPending} onClick={() => assignOne(r.id)}>Save</Button>
-              </div>
-            )}
+            <AssignmentControl
+              currentAssigneeName={r.assignment?.assignee_name ?? null}
+              teamMembers={teamMembers}
+              onAssign={(memberId) => assignOne(r.id, memberId)}
+              onUnassign={r.assignment ? () => unassignOne(r.id) : undefined}
+              pending={isPending}
+            />
           </div>
         ))}
       </div>

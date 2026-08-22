@@ -42,6 +42,12 @@ export const vipContactService = {
     }
   },
 
+  async unassign(firstTimerId: string) {
+    const supabase = await createClient();
+    const { error } = await supabase.from("vip_message_assignments").update({ assigned_to: null, assigned_by: null }).eq("first_timer_id", firstTimerId);
+    if (error) throw new Error(error.message);
+  },
+
   async setMessaged(firstTimerId: string, messaged: boolean, userId: string) {
     const supabase = await createClient();
     const existing = await supabase.from("vip_message_assignments").select("id").eq("first_timer_id", firstTimerId).maybeSingle();

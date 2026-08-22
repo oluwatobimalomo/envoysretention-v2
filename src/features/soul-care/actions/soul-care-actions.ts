@@ -21,6 +21,12 @@ export async function assignContactAction(contactId: string, assignedTo: string)
   revalidatePath("/soul-care/assign");
 }
 
+export async function unassignContactAction(contactId: string) {
+  await requireRole(["admin", "soulcareadmin"]);
+  await soulCareService.unassign(contactId);
+  revalidatePath("/soul-care/assign");
+}
+
 export async function searchContactsAction(query: string) {
   await requireUser();
   return soulCareService.searchByNameOrPhone(query);
@@ -69,6 +75,7 @@ export async function createContactAction(_prev: SoulCareActionState, formData: 
 export async function logVisitAction(
   contactId: string,
   loggedBy: string,
+  existingId: string | undefined,
   _prev: SoulCareActionState,
   formData: FormData
 ): Promise<SoulCareActionState & { success?: boolean }> {
@@ -102,28 +109,31 @@ export async function logVisitAction(
     return { error: "Please fix the highlighted fields.", fieldErrors };
   }
 
+  const payload = {
+    visit_type: parsed.data.visit_type,
+    reason_for_care: parsed.data.reason_for_care || null,
+    urgency: parsed.data.urgency || null,
+    visit_status: parsed.data.visit_status,
+    visit_date: parsed.data.visit_date || null,
+    visit_time: parsed.data.visit_time || null,
+    meeting_notes: parsed.data.meeting_notes || null,
+    visit_photo_url: parsed.data.visit_photo_url || null,
+    material_support: parsed.data.material_support,
+    material_support_notes: parsed.data.material_support ? parsed.data.material_support_notes || null : null,
+    prayer_requests: parsed.data.prayer_requests || null,
+    testimony: parsed.data.testimony || null,
+    follow_up_required: parsed.data.follow_up_required,
+    next_follow_up_date: parsed.data.follow_up_required ? parsed.data.next_follow_up_date || null : null,
+    escalate_to_pastorate: parsed.data.escalate_to_pastorate,
+    escalation_reason: parsed.data.escalate_to_pastorate ? parsed.data.escalation_reason || null : null,
+  };
+
   try {
-    await soulCareService.logVisit({
-      contact_id: contactId,
-      logged_by: loggedBy,
-      logged_by_id: user.id,
-      visit_type: parsed.data.visit_type,
-      reason_for_care: parsed.data.reason_for_care || null,
-      urgency: parsed.data.urgency || null,
-      visit_status: parsed.data.visit_status,
-      visit_date: parsed.data.visit_date || null,
-      visit_time: parsed.data.visit_time || null,
-      meeting_notes: parsed.data.meeting_notes || null,
-      visit_photo_url: parsed.data.visit_photo_url || null,
-      material_support: parsed.data.material_support,
-      material_support_notes: parsed.data.material_support ? parsed.data.material_support_notes || null : null,
-      prayer_requests: parsed.data.prayer_requests || null,
-      testimony: parsed.data.testimony || null,
-      follow_up_required: parsed.data.follow_up_required,
-      next_follow_up_date: parsed.data.follow_up_required ? parsed.data.next_follow_up_date || null : null,
-      escalate_to_pastorate: parsed.data.escalate_to_pastorate,
-      escalation_reason: parsed.data.escalate_to_pastorate ? parsed.data.escalation_reason || null : null,
-    });
+    if (existingId) {
+      await soulCareService.updateVisit(existingId, payload);
+    } else {
+      await soulCareService.logVisit({ contact_id: contactId, logged_by: loggedBy, logged_by_id: user.id, ...payload });
+    }
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Something went wrong." };
   }
@@ -131,4 +141,27 @@ export async function logVisitAction(
   revalidatePath("/soul-care/my-visits");
   revalidatePath("/soul-care/flagged");
   return { error: null, success: true };
+}
+
+export async function exportSoulCareCsvAction() {
+  await requireRole(["admin", "soulcareadmin", "soulcareteam"]);
+  const rows = await soulCareService.listEnriched();
+  const headers = ["full_name", "phone", "email", "gender", "life_stage", "is_active"];
+  const lines = [headers.join(",")];
+  for (const r of rows) {
+    lines.push(headers.map((h) => csvEscape(String((r as unknown as Record<string, unknown>)[h] ?? ""))).join(","));
+  }
+  return lines.join("\r\n");
+}
+
+function csvEscape(value: string): string {
+  if (value.includes(",") || value.includes('"') || value.includes("\n")) {
+    return `"${value.replace(/"/g, '""')}"`;
+  }
+  return value;
+}
+
+export async function bulkImportContactsAction(rows: import("../schemas/visit-schema").NewContactInput[]) {
+  await requireRole(["admin", "soulcareadmin"]);
+  return soulCareService.bulkImportContacts(rows);
 }

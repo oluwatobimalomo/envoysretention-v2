@@ -16,6 +16,12 @@ export async function assignCallAction(firstTimerId: string, assignedTo: string)
   revalidatePath("/experience/assign-calls");
 }
 
+export async function unassignCallAction(firstTimerId: string) {
+  await requireRole(["admin", "experienceadmin"]);
+  await callPipelineService.unassign(firstTimerId);
+  revalidatePath("/experience/assign-calls");
+}
+
 export async function bulkAssignCallsAction(firstTimerIds: string[], assignedTo: string) {
   const user = await requireRole(["admin", "experienceadmin"]);
   await callPipelineService.bulkAssign(firstTimerIds, assignedTo, user.id);
@@ -127,4 +133,29 @@ export async function submitPipelineOverviewAction(
   revalidatePath("/experience/my-calls");
   revalidatePath("/experience/completed");
   return { error: null, success: true };
+}
+
+export async function exportCompletedPipelinesCsvAction(query: { search?: string; dateFrom?: string; dateTo?: string } = {}) {
+  await requireRole(["admin", "experienceadmin"]);
+  const rows = await callPipelineService.listCompleted(query);
+  const headers = ["full_name", "phone", "submitted_by", "decision", "connect_center", "submitted_at"];
+  const lines = [headers.join(",")];
+  for (const r of rows) {
+    lines.push([
+      csvEscapeCP(r.first_timers?.full_name ?? ""),
+      csvEscapeCP(r.first_timers?.phone ?? ""),
+      csvEscapeCP(r.submitted_by),
+      csvEscapeCP(r.move_to_membership ? "Recommended" : "Not Recommended"),
+      csvEscapeCP(r.connect_center ?? ""),
+      csvEscapeCP(r.submitted_at?.slice(0, 10) ?? ""),
+    ].join(","));
+  }
+  return lines.join("\r\n");
+}
+
+function csvEscapeCP(value: string): string {
+  if (value.includes(",") || value.includes('"') || value.includes("\n")) {
+    return `"${value.replace(/"/g, '""')}"`;
+  }
+  return value;
 }

@@ -1,6 +1,7 @@
 import { requireRole } from "@/features/auth/utils/require-role";
 import { callPipelineService } from "@/features/call-pipeline/services/call-pipeline-service";
 import { genderTag } from "@/features/call-pipeline/constants";
+import { CompletedToolbar } from "@/features/call-pipeline/components/completed-toolbar";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata = { title: "Completed Pipelines" };
@@ -20,6 +21,8 @@ export default async function CompletedPipelinesPage({
         <h1 className="text-xl font-semibold">Completed Pipelines</h1>
         <p className="text-sm text-muted-foreground">{rows.length} VIP Retention Overview{rows.length !== 1 ? "s" : ""} submitted</p>
       </div>
+
+      <CompletedToolbar />
 
       {rows.length === 0 ? (
         <div className="rounded-xl border border-dashed py-16 text-center text-sm text-muted-foreground">No completed pipelines yet.</div>

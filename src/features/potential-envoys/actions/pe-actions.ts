@@ -16,6 +16,12 @@ export async function assignPeAction(peId: string, assignedTo: string) {
   revalidatePath("/soul-care/potential-envoys");
 }
 
+export async function unassignPeAction(peId: string) {
+  await requireRole(["admin", "experienceadmin", "soulcareadmin"]);
+  await potentialEnvoysService.unassign(peId);
+  revalidatePath("/soul-care/potential-envoys");
+}
+
 export async function bulkAssignPeAction(peIds: string[], assignedTo: string) {
   const user = await requireRole(["admin", "experienceadmin", "soulcareadmin"]);
   await potentialEnvoysService.bulkAssign(peIds, assignedTo, user.id);
@@ -89,4 +95,22 @@ export async function promotePeAction(peId: string) {
   await potentialEnvoysService.promote(peId);
   revalidatePath("/soul-care/my-potential-envoys");
   revalidatePath("/soul-care/potential-envoys");
+}
+
+export async function exportPotentialEnvoysCsvAction() {
+  await requireRole(["admin", "experienceadmin", "soulcareadmin"]);
+  const rows = await potentialEnvoysService.listEnriched();
+  const headers = ["full_name", "phone", "gender", "training_completed", "promoted_to_membership"];
+  const lines = [headers.join(",")];
+  for (const r of rows) {
+    lines.push(headers.map((h) => csvEscape(String((r as unknown as Record<string, unknown>)[h] ?? ""))).join(","));
+  }
+  return lines.join("\r\n");
+}
+
+function csvEscape(value: string): string {
+  if (value.includes(",") || value.includes('"') || value.includes("\n")) {
+    return `"${value.replace(/"/g, '""')}"`;
+  }
+  return value;
 }

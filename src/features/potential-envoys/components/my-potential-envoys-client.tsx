@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { PeLogFeedbackDialog } from "./pe-log-feedback-dialog";
+import { PeLogFeedbackDialog, type ExistingPeWeekFeedback } from "./pe-log-feedback-dialog";
 import { peNextWeek, peComplete } from "../constants";
 import { saveTrainingAction, promotePeAction } from "../actions/pe-actions";
 import { genderTag } from "@/features/call-pipeline/constants";
@@ -16,7 +16,22 @@ import type { EnrichedPotentialEnvoy } from "../services/potential-envoys-servic
 export function MyPotentialEnvoysClient({ rows, callerName }: { rows: EnrichedPotentialEnvoy[]; callerName: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [dialogTarget, setDialogTarget] = useState<{ row: EnrichedPotentialEnvoy; week: number } | null>(null);
+  const [dialogTarget, setDialogTarget] = useState<{ row: EnrichedPotentialEnvoy; week: number; existing?: ExistingPeWeekFeedback } | null>(null);
+
+  const openEditDialog = (row: EnrichedPotentialEnvoy, week: number) => {
+    const fb = row.fbRows.find((f) => f.week_number === week);
+    if (!fb) return;
+    setDialogTarget({
+      row, week,
+      existing: {
+        call_status: fb.call_status,
+        notes: fb.notes,
+        follow_up_date: fb.follow_up_date,
+        flagged_for_pastoral: fb.flagged_for_pastoral,
+        flag_reason: fb.flag_reason,
+      },
+    });
+  };
 
   const toggleTraining = (row: EnrichedPotentialEnvoy) => {
     startTransition(async () => {
@@ -60,9 +75,16 @@ export function MyPotentialEnvoysClient({ rows, callerName }: { rows: EnrichedPo
               {[1, 2, 3, 4, 5].map((w) => {
                 const done = row.fbRows.some((f) => f.week_number === w);
                 return (
-                  <span key={w} className={`flex size-6 items-center justify-center rounded text-[10px] font-bold ${done ? "bg-success text-white" : "bg-muted text-muted-foreground"}`}>
+                  <button
+                    key={w}
+                    type="button"
+                    disabled={!done}
+                    onClick={() => done && openEditDialog(row, w)}
+                    title={done ? `Edit Week ${w}` : `Week ${w} not logged`}
+                    className={`flex size-6 items-center justify-center rounded text-[10px] font-bold transition-opacity ${done ? "bg-success text-white hover:opacity-80 cursor-pointer" : "bg-muted text-muted-foreground cursor-default"}`}
+                  >
                     W{w}
-                  </span>
+                  </button>
                 );
               })}
               <label className="ml-2 flex items-center gap-1.5 text-xs">
@@ -89,6 +111,7 @@ export function MyPotentialEnvoysClient({ rows, callerName }: { rows: EnrichedPo
           peName={`${dialogTarget.row.full_name}${genderTag(dialogTarget.row.gender)}`}
           week={dialogTarget.week}
           callerName={callerName}
+          existing={dialogTarget.existing}
           onLogged={() => { setDialogTarget(null); router.refresh(); }}
         />
       )}

@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { Phone, CheckCircle2, RefreshCw, Flag, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PipelineBar } from "./pipeline-bar";
-import { LogFeedbackDialog } from "./log-feedback-dialog";
-import { genderTag, nextWeek, normaliseStatus, pipelineComplete, type WeekRow } from "../constants";
+import { LogFeedbackDialog, type ExistingWeekFeedback } from "./log-feedback-dialog";
+import { genderTag, nextWeek, normaliseStatus, pipelineComplete, weeksLogged, type WeekRow } from "../constants";
 import type { EnrichedFirstTimer } from "../services/call-pipeline-service";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +21,7 @@ const TABS = [
 export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]; callerName: string }) {
   const router = useRouter();
   const [filter, setFilter] = useState<(typeof TABS)[number]["k"]>("all");
-  const [dialogTarget, setDialogTarget] = useState<{ row: EnrichedFirstTimer; week: number } | null>(null);
+  const [dialogTarget, setDialogTarget] = useState<{ row: EnrichedFirstTimer; week: number; existing?: ExistingWeekFeedback } | null>(null);
 
   const reached = rows.filter((r) => r.fbRows.some((f) => normaliseStatus(f.call_status) === "Reached"));
   const callback = rows.filter((r) => {
@@ -52,6 +51,25 @@ export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]
     const week = nextWeek(row.fbRows as WeekRow[]);
     if (week === null) return;
     setDialogTarget({ row, week });
+  };
+
+  const openEditDialog = (row: EnrichedFirstTimer, week: number) => {
+    const fb = row.fbRows.find((f) => f.week_number === week);
+    if (!fb) return;
+    setDialogTarget({
+      row,
+      week,
+      existing: {
+        call_status: fb.call_status,
+        experience_rating: fb.experience_rating,
+        returning: fb.returning,
+        notes: fb.notes,
+        follow_up_date: fb.follow_up_date,
+        church_attendance: fb.church_attendance,
+        flagged_for_pastoral: fb.flagged_for_pastoral,
+        flag_reason: fb.flag_reason,
+      },
+    });
   };
 
   return (
@@ -115,7 +133,29 @@ export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]
                   <Badge variant="success">Overview submitted</Badge>
                 )}
               </div>
-              <div className="mt-3"><PipelineBar fbRows={row.fbRows as WeekRow[]} compact /></div>
+              <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                {[1, 2, 3].map((w) => {
+                  const logged = weeksLogged(row.fbRows as WeekRow[]).has(w);
+                  return (
+                    <button
+                      key={w}
+                      type="button"
+                      disabled={!logged}
+                      onClick={() => logged && openEditDialog(row, w)}
+                      className={cn(
+                        "flex size-6 items-center justify-center rounded text-[10px] font-bold transition-opacity",
+                        logged ? "bg-success text-white hover:opacity-80 cursor-pointer" : "bg-muted text-muted-foreground cursor-default"
+                      )}
+                      title={logged ? `Edit Week ${w}` : `Week ${w} not logged`}
+                    >
+                      W{w}
+                    </button>
+                  );
+                })}
+                {pipelineComplete(row.fbRows as WeekRow[]) && (
+                  <span className="ml-1 flex items-center gap-1 text-xs font-medium text-success"><CheckCircle2 size={12} /> Complete</span>
+                )}
+              </div>
             </div>
           );
         })}
@@ -130,6 +170,7 @@ export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]
           week={dialogTarget.week}
           callerName={callerName}
           hasExistingOverview={!!dialogTarget.row.overview}
+          existing={dialogTarget.existing}
           onLogged={() => { setDialogTarget(null); router.refresh(); }}
         />
       )}

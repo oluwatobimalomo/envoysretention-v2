@@ -59,6 +59,12 @@ export const callPipelineService = {
     if (error) throw new Error(error.message);
   },
 
+  async unassign(firstTimerId: string) {
+    const supabase = await createClient();
+    const { error } = await supabase.from("call_assignments").delete().eq("first_timer_id", firstTimerId);
+    if (error) throw new Error(error.message);
+  },
+
   async bulkAssign(firstTimerIds: string[], assignedTo: string, assignedBy: string) {
     const supabase = await createClient();
     const payload = firstTimerIds.map((id) => ({ first_timer_id: id, assigned_to: assignedTo, assigned_by: assignedBy }));

@@ -43,6 +43,12 @@ export const potentialEnvoysService = {
     if (error) throw new Error(error.message);
   },
 
+  async unassign(peId: string) {
+    const supabase = await createClient();
+    const { error } = await supabase.from("potential_envoys_assignments").delete().eq("potential_envoy_id", peId);
+    if (error) throw new Error(error.message);
+  },
+
   async bulkAssign(peIds: string[], assignedTo: string, assignedBy: string) {
     const supabase = await createClient();
     const payload = peIds.map((id) => ({ potential_envoy_id: id, assigned_to: assignedTo, assigned_by: assignedBy }));

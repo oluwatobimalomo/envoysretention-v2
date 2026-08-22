@@ -52,5 +52,16 @@ Also simplified vs. V1 (noted, not hidden):
 - Module 16 — /profile page
 - Module 17 — Cross-cutting: PWA/service worker parity, Storybook, Vitest, Playwright, CI
 
+## ✅ Gap fixes (from GAP_AUDIT.md) — DONE
+All 7 confirmed gaps fixed and verified:
+- [x] Reassignment/unassignment across all 4 assign screens (Call Pipeline, Soul Care, Potential Envoys, VIP Contact) via shared `AssignmentControl` component
+- [x] CSV export added to Completed Pipelines, VIP Contact, Soul Care (assign + queue), Potential Envoys
+- [x] Edit an already-logged week — click any completed week badge in My Calls / My Potential Envoys to reopen it pre-filled
+- [x] Soul Care queue now has search + date-range filter (previously bare)
+- [x] Soul Care `/soul-care/my-visits` shows full visit history per contact (previously only the most recent)
+- [x] Soul Care visits are now editable (`LogVisitDialog` supports `editVisit`)
+- [x] Soul Care CSV bulk import (`/soul-care/import`), mirroring the First-Timers import pattern
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 55 routes
+
 ## Next task
-Module 7 — New Converts (registry, assign, QR self-registration, retention report). Same shape as First-Timers + Call Pipeline, adapted to a monthly check-in cadence instead of weekly.
+Module 7 — New Converts (registry, assign, QR self-registration, retention report).

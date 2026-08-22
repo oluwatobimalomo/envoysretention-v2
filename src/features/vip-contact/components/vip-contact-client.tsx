@@ -2,14 +2,15 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, MessageCircle, CheckCircle2 } from "lucide-react";
+import { Search, MessageCircle, CheckCircle2, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { NativeSelect } from "@/components/ui/native-select";
 import { toast } from "sonner";
-import { assignVipAction, setVipMessagedAction } from "../actions/vip-contact-actions";
+import { assignVipAction, setVipMessagedAction, unassignVipAction, exportVipContactCsvAction } from "../actions/vip-contact-actions";
 import { vipWhatsAppLink } from "../constants";
 import { genderTag } from "@/features/call-pipeline/constants";
+import { AssignmentControl } from "@/components/shared/assignment-control";
+import { downloadCsv } from "@/lib/csv";
 import type { EnrichedVip } from "../services/vip-contact-service";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +27,7 @@ export function VipContactClient({
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("unassigned");
-  const [rowAssign, setRowAssign] = useState<Record<string, string>>({});
+  const [exporting, setExporting] = useState(false);
 
   const filtered = rows.filter((r) => {
     const matchSearch = !search || r.full_name.toLowerCase().includes(search.toLowerCase()) || r.phone.includes(search);
@@ -41,13 +42,18 @@ export function VipContactClient({
   const assignedCount = rows.filter((r) => r.vip?.assigned_to).length;
   const messagedCount = rows.filter((r) => r.vip?.messaged).length;
 
-  const assignOne = (id: string) => {
-    const member = rowAssign[id];
-    if (!member) return;
+  const assignOne = (id: string, memberId: string) => {
     startTransition(async () => {
-      await assignVipAction(id, member);
+      await assignVipAction(id, memberId);
       toast.success("Assigned.");
-      setRowAssign((p) => { const n = { ...p }; delete n[id]; return n; });
+      router.refresh();
+    });
+  };
+
+  const unassignOne = (id: string) => {
+    startTransition(async () => {
+      await unassignVipAction(id);
+      toast.success("Unassigned.");
       router.refresh();
     });
   };
@@ -64,6 +70,16 @@ export function VipContactClient({
     if (!link) { toast.error("This VIP has no valid phone number to message."); return; }
     window.open(link, "_blank");
     if (!r.vip?.messaged) setMessaged(r.id, true);
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const csv = await exportVipContactCsvAction();
+      downloadCsv(`vip-contact-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+    } finally {
+      setExporting(false);
+    }
   };
 
   return (
@@ -92,6 +108,9 @@ export function VipContactClient({
           <Search size={13} className="absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search…" className="w-48 pl-8" />
         </div>
+        <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting}>
+          <Download size={14} /> {exporting ? "Exporting…" : "Export CSV"}
+        </Button>
       </div>
 
       <div className="space-y-2">
@@ -106,18 +125,15 @@ export function VipContactClient({
                 <div>
                   <p className="font-medium">{r.full_name}{genderTag(r.gender)}</p>
                   <p className="text-xs text-muted-foreground">{r.phone} · Service {r.service_date}</p>
-                  {r.vip?.assignee_name && <p className="text-xs text-muted-foreground">Assigned to {r.vip.assignee_name}</p>}
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  {!r.vip?.assigned_to && (
-                    <>
-                      <NativeSelect className="w-40" value={rowAssign[r.id] ?? ""} onChange={(e) => setRowAssign((p) => ({ ...p, [r.id]: e.target.value }))}>
-                        <option value="">Assign to…</option>
-                        {teamMembers.map((m) => <option key={m.id} value={m.id}>{m.full_name}</option>)}
-                      </NativeSelect>
-                      <Button size="sm" variant="outline" disabled={!rowAssign[r.id] || isPending} onClick={() => assignOne(r.id)}>Save</Button>
-                    </>
-                  )}
+                  <AssignmentControl
+                    currentAssigneeName={r.vip?.assignee_name ?? null}
+                    teamMembers={teamMembers}
+                    onAssign={(memberId) => assignOne(r.id, memberId)}
+                    onUnassign={r.vip?.assigned_to ? () => unassignOne(r.id) : undefined}
+                    pending={isPending}
+                  />
                   <Button size="sm" variant="outline" onClick={() => sendWhatsApp(r)}><MessageCircle size={13} /> WhatsApp</Button>
                   <Button size="sm" variant={isMessaged ? "default" : "outline"} onClick={() => setMessaged(r.id, true)} disabled={isPending}>
                     <CheckCircle2 size={13} /> Messaged
