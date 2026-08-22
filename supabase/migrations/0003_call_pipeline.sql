@@ -1,10 +1,4 @@
--- ============================================================================
--- 0003_call_pipeline.sql
 -- Module 3: Experience Team call pipeline (Assign Calls, My Calls, Call
--- Queue, Completed Pipelines, 3-week Log Feedback, VIP Retention Overview).
--- Ported from V1's call_assignments / call_feedback / pipeline_overviews.
--- ============================================================================
-
 create table public.call_assignments (
   id uuid primary key default gen_random_uuid(),
   first_timer_id uuid not null references public.first_timers (id) on delete cascade,
@@ -20,7 +14,7 @@ create table public.call_feedback (
   week_number smallint not null check (week_number between 1 and 3),
   call_status text not null check (call_status in ('Reached', 'Not Reached', 'Callback Requested', 'Wrong Number')),
   experience_rating text check (experience_rating in ('Excellent', 'Good', 'Average', 'Poor')),
-  returning text check (returning in ('Yes', 'Maybe', 'No', 'Undecided')),
+  "returning" text check ("returning" in ('Yes', 'Maybe', 'No', 'Undecided')),
   notes text,
   follow_up_date date,
   caller_name text not null,
