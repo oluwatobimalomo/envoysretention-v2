@@ -1,39 +1,52 @@
 # The Envoys — V2 Master Build Checklist
 
-## ✅ Structural pass — DONE
-- Auth, roles, RLS, sidebar/nav, dark mode, all 46 routes reachable (see prior notes)
-- **Church logo wired in**: `public/logo.png` → `<BrandMark>` component used in Sidebar, MobileHeader, Login page, and the public Register page
+## ✅ Structural pass, Module 2 (First-Timers) — DONE (see prior notes)
 
-## ✅ Module 2 — First-Timers registry — DONE
-- [x] SQL migration `0002_first_timers.sql`: table, constraints, indexes, full-text search index on name, RLS (staff read/write by role, **public insert-only** policy for the QR self-registration form — same open-registration UX as V1, but now scoped and auditable instead of a bare anon key)
-- [x] `/first-timers` — list with search (name/phone), date-range filter, pagination, empty state, loading via Suspense-free server fetch
-- [x] `/first-timers/new` — add form (admin/dofficer only)
-- [x] `/first-timers/[id]/edit` — edit form, same shared component as add
-- [x] `/first-timers/qr` — downloadable/copyable QR code linking to `/register`
-- [x] `/first-timers/import` — CSV import: template download, client-side parse + validate preview, bulk insert
-- [x] `/register` — public, unauthenticated self-registration form (ported field-for-field from V1's `PublicForm`, including the "no membership_decision/heard_from shown" public-mode restriction)
-- [x] Live phone-number duplicate check while typing (debounced), same UX as V1
-- [x] CSV export button on the list (respects current search/date filters)
-- [x] Gender tag "(M)/(F)" in the table, matching V1's display convention
-- [x] Fixed a React Compiler lint violation along the way (setState called synchronously inside an effect) — all state updates in the dedupe-check effect now happen inside the debounce callback
+## ✅ Module 3 — Call Pipeline — DONE
+- [x] SQL `0003_call_pipeline.sql`: `call_assignments`, `call_feedback`, `pipeline_overviews` + RLS (expteam only sees their own assignments; admin/experienceadmin see all)
+- [x] DB trigger: submitting an overview with `move_to_membership = true` auto-syncs `first_timers.membership_decision = 'Member'` (matches V1)
+- [x] `/experience/assign-calls` — bulk assign (select rows or "all unassigned") + individual assign, filter tabs, search
+- [x] `/experience/my-calls` — stat cards, "due today/overdue" panel, filter tabs, Log Feedback dialog (Week 1→2→3), auto-prompts VIP Retention Overview dialog after Week 3 if not yet submitted
+- [x] `/experience/call-queue` — status-categorized queue (pending/reached/callback/incorrect/complete)
+- [x] `/experience/completed` — table of submitted VIP Retention Overviews with decision badges
+- [x] Exact V1 field parity: `CALL_STATUS_OPTIONS`, experience rating, returning-likelihood, church attendance (week 2+), pastoral flagging, natural groups, connect centers
+
+## ✅ Module 4 — VIP Contact — DONE
+- [x] SQL `0004_vip_contact.sql`: `vip_message_assignments` + RLS
+- [x] `/first-timers/vip-contact` — assign, WhatsApp deep-link (exact V1 welcome message template), Messaged/Not Messaged toggle, filter tabs, stat cards
+
+## ✅ Module 5 — Soul Care (visits track) — DONE
+- [x] SQL `0005_soul_care.sql`: `soul_care_contacts` (separate ongoing-care pool, distinct from `first_timers`), `soul_care_assignments`, `soul_care_visits` + RLS
+- [x] SQL `0006_visit_photos_storage.sql`: Supabase Storage bucket `visit-photos`, public read, Soul Care-role-only write
+- [x] `/soul-care/assign` — assign contacts to Soul Care team members
+- [x] `/soul-care/my-visits` — assigned contacts, last-visit summary, Log Visit dialog
+- [x] `/soul-care/queue` — full contact pool with assignment status
+- [x] `/soul-care/visits/new` — search existing contact or add new one, then log the visit (mirrors V1's two-step flow)
+- [x] `/soul-care/flagged` — pastoral escalations, 3+ day aging indicator
+- [x] Visit form: type, urgency, status, notes, **photo upload** (direct-to-Storage from the browser), material support, prayer requests, testimony, follow-up, pastoral escalation
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 54 routes
 
-## ⏳ Modules (build order — next up first)
-- [ ] **Module 3 — Call pipeline**: `/experience/assign-calls`, `/experience/my-calls`, `/experience/call-queue`, `/experience/completed`, log feedback, pipeline overview → membership recommendation
-- [ ] **Module 4 — VIP Contact**: `/first-timers/vip-contact`, WhatsApp template, messaged status
-- [ ] **Module 5 — Soul Care**: visits, assign, queue, flagged, priority list, members/stewards care, photo upload to Storage
-- [ ] **Module 6 — Potential Envoys**
-- [ ] **Module 7 — New Converts**: registry, assign, QR, retention report
-- [ ] **Module 8 — Megastars**: check-in/out, services, roster
-- [ ] **Module 9 — Research & Feedback**
-- [ ] **Module 10 — Testimonies**
-- [ ] **Module 11 — Connect Centre**
-- [ ] **Module 12 — Admin**: users list, add user (needs a Supabase Edge Function using the service-role key), role management
-- [ ] **Module 13 — Reports & Dashboards** (Recharts)
-- [ ] **Module 14 — Notifications** (real `NotificationBell`)
-- [ ] **Module 15 — Birthday wishes**
-- [ ] **Module 16 — `/profile` page**
-- [ ] **Module 17 — Cross-cutting**: PWA/service worker parity, Storybook, Vitest, Playwright, CI
+## ⚠️ Discovered but deferred — not silently dropped
+While reading V1 for Module 5, found it also has: `church_members` (a broader membership-records table), `StewardsCare`, `MembersCare`, `VipJourneyDashboard` (8-week funnel: registration → 48h contact → overview → Connect Centre confirmation → Potential Envoys graduation), and `connect_centre_prospects`. These read from a membership-records system V1 has that V2 doesn't have yet. Routes `/soul-care/members-care`, `/soul-care/steward-care`, `/soul-care/priority`, `/soul-care/vip-journey`, `/soul-care/dashboard` remain placeholders — flagged here as **Module 5b: Membership Records**, not forgotten.
+
+Also simplified vs. V1 (noted, not hidden):
+- No analytics/chart dashboards yet for `/experience/dashboard`, `/reports` — Recharts-based reporting is its own module (13)
+- Experience/Soul Care "leaderboard" and weekly-trend widgets from V1's `Report`/`ExperienceAnalyticsDashboard` not yet ported
+
+## Remaining modules (build order)
+- Module 5b — Membership Records: `church_members` table, Stewards Care, Members Care, Care Priority List, VIP Journey Dashboard
+- Module 6 — Potential Envoys
+- Module 7 — New Converts: registry, assign, QR, retention report
+- Module 8 — Megastars: check-in/out, services, roster
+- Module 9 — Research & Feedback
+- Module 10 — Testimonies
+- Module 11 — Connect Centre
+- Module 12 — Admin: users list, add user (Supabase admin API via Edge Function), role management
+- Module 13 — Reports & Dashboards (Recharts): Report, Experience Dashboard, Soul Care Dashboard, VIP Journey Dashboard
+- Module 14 — Notifications
+- Module 15 — Birthday wishes
+- Module 16 — /profile page
+- Module 17 — Cross-cutting: PWA/service worker parity, Storybook, Vitest, Playwright, CI
 
 ## Next task
-Module 3 — Call pipeline (Assign Calls, My Calls, Log Feedback 3-week, Pipeline Overview, Completed Pipelines, Call Queue). This is V1's largest single module — depends on `first_timers` (done) plus new tables: `call_assignments`, `call_feedback`, `pipeline_overviews`.
+Module 6 — Potential Envoys (the 5-week post-membership track referenced by V1's `potential_envoys` / `potential_envoys_feedback` tables).
