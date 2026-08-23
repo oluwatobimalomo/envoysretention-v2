@@ -44,7 +44,7 @@ Also simplified vs. V1 (noted, not hidden):
 - Module 8 — Megastars: check-in/out, services, roster
 - Module 9 — Research & Feedback
 - Module 10 — Testimonies
-- Module 11 — Connect Centre
+
 - Module 12 — Admin: users list, add user (Supabase admin API via Edge Function), role management
 - Module 13 — Reports & Dashboards (Recharts): Report, Experience Dashboard, Soul Care Dashboard, VIP Journey Dashboard
 - Module 14 — Notifications
@@ -116,5 +116,11 @@ Prompted by a direct comparison against V1's actual login screen, which surfaced
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 60 routes
 - Note: V1's full-screen "Testimony Projector" (pulpit reader with persisted navigation state, dynamic font sizing) not ported — flagged as a genuine V1 feature not yet in V2, not silently dropped
 
+## ✅ Module 11 — Connect Centre — DONE
+- [x] SQL `0013_connect_centre.sql`: `connect_centre_prospects` table + RLS, **auto-populated by a trigger** on `pipeline_overviews` — whenever a VIP Retention Overview recommends a Connect Center, a prospect row is created automatically from `first_timers` data. No manual entry.
+- [x] `/connect-centre` — stat cards, filter by centre + confirmed/awaiting, search, select-then-export CSV, one-click "Mark Confirmed" with Undo
+- [x] This fixes the **Connect Centre** role's landing page — **all 11 roles now land on a real, working page at login**, closing out the original 4-broken-landings issue entirely
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 60 routes
+
 ## Next task
-Module 11 — Connect Centre (`/connect-centre`) — the last of the 4 originally-broken role landing pages. Small module: a list of prospective members routed from the VIP Retention Overview's "Recommended Connect Center" field (Module 3).
+Module 12 (remainder) — the rest of Admin. Most of it (access requests, approve/deny, direct user creation) already shipped when fixing the login page. After that: Module 5b (Membership Records) and Module 13 (Reports & Dashboards with real charts) are the two largest remaining gaps.

@@ -1,14 +1,4 @@
--- ============================================================================
--- 0011_feedback_submissions.sql
--- Module 9: General Feedback — a public, optionally-anonymous form (reached
--- via a QR code) for members to share thoughts on Sunday service. Ported
--- from V1's feedback_submissions table.
---
--- Note: /feedback and /feedback/flagged (the admin/experienceadmin "All
--- Feedback"/"Flagged" nav items) read from the EXISTING call_feedback table
--- from Module 3 — no new table needed for those.
--- ============================================================================
-
+-- Module 9: General Feedback
 create table public.feedback_submissions (
   id uuid primary key default gen_random_uuid(),
   name text,

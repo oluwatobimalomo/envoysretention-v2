@@ -1,11 +1,4 @@
--- ============================================================================
--- 0012_public_testimonies.sql
--- Module 10: Testimony Bank — a public, optionally-anonymous testimony
--- submission form (reached via QR). "Testimonies" (the other half of this
--- module) reads from the EXISTING soul_care_visits.testimony field from
--- Module 5 — no new table needed there.
--- ============================================================================
-
+-- Module 10: Testimony Bank
 create table public.public_testimonies (
   id uuid primary key default gen_random_uuid(),
   name text,

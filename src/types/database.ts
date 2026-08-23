@@ -354,6 +354,17 @@ export interface Database {
         Update: Record<string, never>;
         Relationships: [];
       };
+      connect_centre_prospects: {
+        Row: {
+          id: string; original_first_timer_id: string; full_name: string; phone: string | null;
+          gender: string | null; dob: string | null; life_stage: string | null; connect_center: string;
+          natural_groups: string[] | null; confirmed: boolean; confirmed_by: string | null;
+          confirmed_at: string | null; created_at: string;
+        };
+        Insert: never;
+        Update: { confirmed?: boolean; confirmed_by?: string | null; confirmed_at?: string | null; };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
