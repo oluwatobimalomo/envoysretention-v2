@@ -132,5 +132,16 @@ Three real gaps in the access-request flow, fixed:
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
 - Note: password-reset emails require Supabase's email sending to be configured (default Supabase email service works out of the box in most cases, but check Supabase dashboard → Authentication → Email if reset emails don't arrive)
 
+## ✅ Module 5b — Membership Records — DONE
+- [x] SQL `0015_church_members.sql`: `church_members` table (Stewards + Members registry, distinct from the Soul Care visit pool) + RLS
+- [x] `/soul-care/steward-care` — Stewards registry: stat cards (Total, Active, New This Month, Children), search + filters, click-to-toggle Active/Inactive status, "Add to Pool" (creates a `soul_care_contacts` row)
+- [x] `/soul-care/members-care` — same registry UI for Members, plus a toggleable **CSV bulk import** (admin/soulcareadmin only)
+- [x] `/soul-care/priority` — Care Priority List: everyone marked Inactive, sorted by days-since-last-contact (never contacted = highest priority), with stat cards
+- [x] `/soul-care/vip-journey` — a real 5-stage funnel (Registered → Welcomed → Overview Submitted → Connect Centre Confirmed → Graduated Envoy), built entirely from data already collected across Modules 2, 3, 4, 6, and 11 — no new tracking needed
+- [x] **"Last Visitation"/"Last Call"/"In Pool" are all derived**, not stored — matched at query time by normalized phone number against `soul_care_contacts`/`soul_care_visits`, exactly matching V1's approach (no data duplication between the membership registry and the active care pool)
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
+- [x] **Every Soul Care nav item is now a real page** — this was the last set of "Coming Soon" placeholders in the entire app tied to a specific, named module
+- Note: V1's dedicated full-page "Member Profile" (visit history deep-dive per member) not ported — Add to Pool + inline status toggle cover the actionable core; flagged as a future nicety, not a silent drop
+
 ## Next task
 Module 12 (remainder) — the rest of Admin. Most of it (access requests, approve/deny, direct user creation) already shipped when fixing the login page. After that: Module 5b (Membership Records) and Module 13 (Reports & Dashboards with real charts) are the two largest remaining gaps.

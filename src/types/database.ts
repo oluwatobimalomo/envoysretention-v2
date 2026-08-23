@@ -365,6 +365,22 @@ export interface Database {
         Update: { confirmed?: boolean; confirmed_by?: string | null; confirmed_at?: string | null; };
         Relationships: [];
       };
+      church_members: {
+        Row: {
+          id: string; full_name: string; phone: string; email: string | null; gender: string | null;
+          dob: string | null; marital_status: string | null; life_stage: string | null; category: string;
+          membership_status: string; date_joined: string | null; house_address: string | null;
+          nearest_landmark: string | null; added_by: string | null; created_at: string;
+        };
+        Insert: {
+          id?: string; full_name: string; phone: string; email?: string | null; gender?: string | null;
+          dob?: string | null; marital_status?: string | null; life_stage?: string | null; category?: string;
+          membership_status?: string; date_joined?: string | null; house_address?: string | null;
+          nearest_landmark?: string | null; added_by?: string | null;
+        };
+        Update: { membership_status?: string; };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
