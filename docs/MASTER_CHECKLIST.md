@@ -160,5 +160,37 @@ Found by directly comparing V2 against V1's live production app — `expteam` ha
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
 - **Worth flagging honestly**: this was caught because you happened to test as `expteam` and compare screenshots. The original nav config (`roles.ts`) was written once in the very first commit based on my reading of V1's source, not verified role-by-role against the live app since. It's plausible other roles have similar, still-undiscovered gaps between what V2 grants and what V1 actually gave them — a full side-by-side audit (log in as each of the 11 roles in both apps, compare sidebars) would be the thorough way to rule this out completely.
 
+## ✅ Fixes: theme provider warning + hydration mismatch + real /profile page — DONE
+- [x] Replaced abandoned `next-themes` (React 19 script-tag warning) with a minimal self-written provider using `useServerInsertedHTML`
+- [x] Fixed 4 instances of locale-dependent date formatting (`.toLocaleString()`/`.toLocaleTimeString()`) causing real hydration mismatches — new shared `formatDateTime()`/`formatTime()`/`formatDate()` utility pinned to `Africa/Lagos`, used everywhere a timestamp renders
+- [x] `/profile` — was a placeholder despite being linked from the user menu on every single page. Now real: view email/role, update your own name (RLS-enforced — can't touch role/active status even if tampered with), change your own password (re-verifies current password first)
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
+
+---
+
+# STATE OF THE APP — for the upcoming testing pass
+
+**Every module is built and no page in the primary navigation of any of the 11 roles is a dead link or placeholder.** That's a real milestone — worth stating plainly before testing begins.
+
+## What's fully real and testable
+Modules 1–13 (Foundation, First-Timers, Call Pipeline, VIP Contact, Soul Care, Potential Envoys, New Converts, Megastars, Research & Feedback, Testimonies, Connect Centre, Membership Records, Reports & Dashboards) — all built, all with real Supabase-backed CRUD, all verified via `tsc`/`eslint`/`next build`, all pushed to `main`.
+
+## Known, deliberately-deferred gaps (not hidden, not silent)
+- **Notifications** (Module 14) — the bell icon in the header is visibly disabled; nothing behind it yet
+- **Birthday Wishes** (Module 15) — not started
+- **PDF export** on `/reports` and the AI-style text summary on the Soul Care funnel — V1 has both, V2 doesn't yet
+- **V1's full-screen Testimony Projector** (pulpit display mode) — not ported
+- **Soul Care CSV bulk import** for guardians+children together on the Megastars roster — not ported (Members Care does have bulk import; Megastars roster doesn't)
+- Cross-cutting: no automated test suite, no CI pipeline, no PWA/offline support yet
+
+## What to watch for while testing (patterns we've already caught once)
+1. **Role-scoped nav vs. what a role can actually query** — we found one real case (`expteam`) where the sidebar item existed but the underlying database security rule was silently filtering results tighter than intended. If a page loads but shows suspiciously little data for a role that should see more, that's the pattern to suspect.
+2. **Any place a date/time renders** — if you see a hydration error, it's almost certainly the same locale-formatting bug class we just fixed 4 instances of; check for stray `.toLocaleString()`/`.toLocaleDateString()` calls.
+3. **RLS policies generally** — every table's security rules were written by reasoning about who *should* see what, not verified against V1's actual behavior row-by-row. Worth spot-checking as you test each role.
+
+## Recommended testing approach
+Go role by role (all 11), and for each: log in, click through every sidebar item, try the core create/edit/assign/export actions, and compare against what that role could do in V1 if you have access to it side-by-side. Report back anything that's missing, wrong, or looks off — exactly like the `expteam` and hydration issues you already caught.
+
 ## Next task
+Awaiting your testing feedback.
 Module 12 (remainder) — the rest of Admin. Most of it (access requests, approve/deny, direct user creation) already shipped when fixing the login page. After that: Module 5b (Membership Records) and Module 13 (Reports & Dashboards with real charts) are the two largest remaining gaps.
