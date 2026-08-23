@@ -25,6 +25,8 @@ export async function submitAccessRequestAction(
     phone: str(formData, "phone"),
     requested_role: str(formData, "requested_role"),
     message: str(formData, "message"),
+    password: str(formData, "password"),
+    confirm_password: str(formData, "confirm_password"),
   });
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
@@ -39,8 +41,9 @@ export async function submitAccessRequestAction(
       full_name: parsed.data.full_name,
       email: parsed.data.email,
       phone: parsed.data.phone || null,
-      requested_role: parsed.data.requested_role as never,
+      requested_role: parsed.data.requested_role,
       message: parsed.data.message || null,
+      password: parsed.data.password,
     });
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Something went wrong. Please try again." };
@@ -50,9 +53,8 @@ export async function submitAccessRequestAction(
 
 export async function approveAccessRequestAction(requestId: string) {
   const user = await requireRole(["admin"]);
-  const result = await accessRequestsService.approve(requestId, user.id);
+  await accessRequestsService.approve(requestId, user.id);
   revalidatePath("/admin/users");
-  return result;
 }
 
 export async function denyAccessRequestAction(requestId: string, reason: string) {
@@ -71,6 +73,11 @@ export async function setProfileRoleAction(userId: string, role: string) {
   await requireRole(["admin"]);
   await accessRequestsService.setProfileRole(userId, role);
   revalidatePath("/admin/users");
+}
+
+export async function resetUserPasswordAction(userId: string) {
+  await requireRole(["admin"]);
+  return accessRequestsService.resetUserPassword(userId);
 }
 
 export interface CreateUserActionState {

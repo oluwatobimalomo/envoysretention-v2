@@ -11,7 +11,7 @@ export async function loginAction(_prevState: LoginActionState, formData: FormDa
   if (result.error) return { error: result.error };
   const user = await authService.getCurrentUser();
   if (!user) return { error: "Signed in, but no profile was found for this account." };
-  if (!user.isActive) return { error: "This account has been deactivated. Contact an administrator." };
+  if (!user.isActive) return { error: "This account isn't active yet — either your access request is still pending admin approval, or your account has been deactivated. Contact an administrator if this seems wrong." };
   redirect(DEFAULT_ROUTE[user.role]);
 }
 export async function logoutAction() {

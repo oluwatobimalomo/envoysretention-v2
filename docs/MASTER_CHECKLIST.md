@@ -122,5 +122,15 @@ Prompted by a direct comparison against V1's actual login screen, which surfaced
 - [x] This fixes the **Connect Centre** role's landing page — **all 11 roles now land on a real, working page at login**, closing out the original 4-broken-landings issue entirely
 - [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 60 routes
 
+## ✅ Auth self-service upgrade — DONE
+Three real gaps in the access-request flow, fixed:
+- [x] SQL `0014_password_selfservice.sql`: `access_requests.user_id` column, `handle_new_user()` updated to respect a `pending` metadata flag
+- [x] **Self-service password**: the requester now sets their own password on `/request-access`. The Supabase Auth account is created immediately (password stored securely by Supabase, never touched by our code) but `is_active=false` until an admin approves — approval just flips that flag, no more temp-password hand-off for this path. Denying a request now actually deletes the unused account instead of leaving an orphaned inactive login.
+- [x] **Forgot Password**: `/forgot-password` (request reset email) → `/reset-password` (set new password, using Supabase's standard recovery-link flow) → redirect to `/login`. Added a "Forgot password?" link on the sign-in form.
+- [x] **Admin password reset**: a "Reset Password" button per team member on `/admin/users`, generates a new temporary password via the admin API, shown once for secure hand-off — same pattern as the original direct-create flow.
+- [x] Login's "inactive account" message now covers both pending-approval and deactivated cases without misleading wording
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
+- Note: password-reset emails require Supabase's email sending to be configured (default Supabase email service works out of the box in most cases, but check Supabase dashboard → Authentication → Email if reset emails don't arrive)
+
 ## Next task
 Module 12 (remainder) — the rest of Admin. Most of it (access requests, approve/deny, direct user creation) already shipped when fixing the login page. After that: Module 5b (Membership Records) and Module 13 (Reports & Dashboards with real charts) are the two largest remaining gaps.

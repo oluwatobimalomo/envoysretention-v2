@@ -2,13 +2,16 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, X, Copy, Mail, ShieldCheck, ShieldOff, Clock } from "lucide-react";
+import { Check, X, Copy, ShieldCheck, ShieldOff, Clock, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { approveAccessRequestAction, denyAccessRequestAction, setProfileActiveAction, setProfileRoleAction } from "../actions/access-requests-actions";
+import {
+  approveAccessRequestAction, denyAccessRequestAction, setProfileActiveAction,
+  setProfileRoleAction, resetUserPasswordAction,
+} from "../actions/access-requests-actions";
 import { ROLE_META, APP_ROLES, type AppRole } from "@/lib/config/roles";
 import type { AccessRequestRow } from "../services/access-requests-service";
 import type { Database } from "@/types/database";
@@ -19,13 +22,13 @@ export function AdminUsersClient({ pendingRequests, profiles }: { pendingRequest
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [tab, setTab] = useState<"requests" | "team">(pendingRequests.length > 0 ? "requests" : "team");
-  const [credentials, setCredentials] = useState<{ email: string; tempPassword: string } | null>(null);
+  const [credentials, setCredentials] = useState<{ tempPassword: string; name: string } | null>(null);
 
   const handleApprove = (req: AccessRequestRow) => {
     startTransition(async () => {
       try {
-        const result = await approveAccessRequestAction(req.id);
-        setCredentials({ email: result.email, tempPassword: result.tempPassword });
+        await approveAccessRequestAction(req.id);
+        toast.success(`${req.full_name} approved — they can sign in now with the password they set.`);
         router.refresh();
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Couldn't approve this request.");
@@ -58,9 +61,21 @@ export function AdminUsersClient({ pendingRequests, profiles }: { pendingRequest
     });
   };
 
+  const handleResetPassword = (profile: ProfileRow) => {
+    if (!confirm(`Reset ${profile.full_name}'s password? Their current password will stop working immediately.`)) return;
+    startTransition(async () => {
+      try {
+        const result = await resetUserPasswordAction(profile.id);
+        setCredentials({ tempPassword: result.tempPassword, name: profile.full_name });
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Couldn't reset this password.");
+      }
+    });
+  };
+
   const copyCreds = () => {
     if (!credentials) return;
-    navigator.clipboard.writeText(`Email: ${credentials.email}\nTemporary password: ${credentials.tempPassword}`);
+    navigator.clipboard.writeText(`Temporary password for ${credentials.name}: ${credentials.tempPassword}`);
     toast.success("Copied to clipboard.");
   };
 
@@ -112,6 +127,9 @@ export function AdminUsersClient({ pendingRequests, profiles }: { pendingRequest
                 <NativeSelect className="w-44" value={p.role} onChange={(e) => changeRole(p, e.target.value)} disabled={isPending}>
                   {APP_ROLES.map((r) => <option key={r} value={r}>{ROLE_META[r].label}</option>)}
                 </NativeSelect>
+                <Button size="sm" variant="outline" onClick={() => handleResetPassword(p)} disabled={isPending}>
+                  <KeyRound size={13} /> Reset Password
+                </Button>
                 <Button size="sm" variant="outline" onClick={() => toggleActive(p)} disabled={isPending}>
                   {p.is_active ? <><ShieldOff size={13} /> Deactivate</> : <><ShieldCheck size={13} /> Reactivate</>}
                 </Button>
@@ -123,14 +141,14 @@ export function AdminUsersClient({ pendingRequests, profiles }: { pendingRequest
 
       <Dialog open={!!credentials} onOpenChange={(o) => !o && setCredentials(null)}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Account created</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Password reset</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Share these sign-in details with the new team member securely (e.g. in person or via a private message) — this password won&apos;t be shown again.
+              Share this new temporary password with {credentials?.name} securely (in person or via a private message) — it won&apos;t be shown again. They should change it after logging in.
             </p>
             <div className="space-y-2 rounded-lg border bg-muted/50 p-4 font-mono text-sm">
-              <p className="flex items-center gap-1.5"><Mail size={13} /> {credentials?.email}</p>
-              <p>Temporary password: <strong>{credentials?.tempPassword}</strong></p>
+              <p className="flex items-center gap-1.5"><KeyRound size={13} /> {credentials?.name}</p>
+              <p>New password: <strong>{credentials?.tempPassword}</strong></p>
             </div>
             <Button onClick={copyCreds} variant="outline" className="w-full"><Copy size={14} /> Copy to clipboard</Button>
           </div>

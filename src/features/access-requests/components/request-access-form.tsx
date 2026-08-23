@@ -18,7 +18,7 @@ const initialState: AccessRequestActionState & { success?: boolean } = { error: 
 
 export function RequestAccessForm() {
   const [state, formAction, pending] = useActionState(submitAccessRequestAction, initialState);
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm<AccessRequestInput>({
+  const { register, handleSubmit, formState: { errors } } = useForm<AccessRequestInput>({
     resolver: zodResolver(accessRequestSchema),
     mode: "onBlur",
   });
@@ -35,7 +35,6 @@ export function RequestAccessForm() {
   const fieldError = (name: keyof AccessRequestInput) => errors[name]?.message ?? state.fieldErrors?.[name];
 
   if (state.success) {
-    const email = getValues("email");
     return (
       <div className="flex flex-col items-start gap-4 text-left">
         <div className="flex size-14 items-center justify-center rounded-full bg-success/15 text-success">
@@ -44,7 +43,7 @@ export function RequestAccessForm() {
         <div>
           <h1 className="font-display text-2xl font-semibold">Request sent</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            {email ? <>We&apos;ll email <strong className="text-foreground">{email}</strong> as soon as</> : "You'll be notified as soon as"} an admin approves your access and your login is ready. No further action needed for now.
+            Your account is ready — you just need an admin to approve access. Once they do, sign in with the email and password you just set. No further action needed for now.
           </p>
         </div>
       </div>
@@ -54,7 +53,7 @@ export function RequestAccessForm() {
   return (
     <>
       <h1 className="font-display text-2xl font-semibold">Request access</h1>
-      <p className="mt-1 mb-6 text-sm text-muted-foreground">Tell us who you are and which team you&apos;re joining. An admin will review and set up your login.</p>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">Set up your login now — an admin just needs to approve it before you can sign in.</p>
 
       <form id="request-access-form" onSubmit={handleSubmit(onValid)} className="space-y-4" noValidate>
         <div className="space-y-1.5">
@@ -79,6 +78,20 @@ export function RequestAccessForm() {
           </NativeSelect>
           {fieldError("requested_role") && <p className="text-xs text-destructive">{fieldError("requested_role")}</p>}
         </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <Label>Choose a Password</Label>
+            <Input {...register("password")} type="password" autoComplete="new-password" placeholder="At least 8 characters" />
+            {fieldError("password") && <p className="text-xs text-destructive">{fieldError("password")}</p>}
+          </div>
+          <div className="space-y-1.5">
+            <Label>Confirm Password</Label>
+            <Input {...register("confirm_password")} type="password" autoComplete="new-password" />
+            {fieldError("confirm_password") && <p className="text-xs text-destructive">{fieldError("confirm_password")}</p>}
+          </div>
+        </div>
+
         <div className="space-y-1.5">
           <Label>Anything else? (optional)</Label>
           <Textarea {...register("message")} rows={2} placeholder="e.g. I was invited by..." />

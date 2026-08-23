@@ -11,5 +11,10 @@ export const accessRequestSchema = z.object({
   phone: z.string().trim().optional().or(z.literal("")),
   requested_role: z.enum(REQUESTABLE_ROLES as [string, ...string[]], { message: "Select the team you're joining" }),
   message: z.string().trim().optional().or(z.literal("")),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  confirm_password: z.string(),
+}).refine((v) => v.password === v.confirm_password, {
+  message: "Passwords don't match",
+  path: ["confirm_password"],
 });
 export type AccessRequestInput = z.infer<typeof accessRequestSchema>;

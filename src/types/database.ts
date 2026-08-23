@@ -325,11 +325,11 @@ export interface Database {
           id: string; full_name: string; email: string; phone: string | null;
           requested_role: AppRole; message: string | null; status: string;
           reviewed_by: string | null; reviewed_at: string | null; denial_reason: string | null;
-          created_at: string;
+          user_id: string | null; created_at: string;
         };
         Insert: {
           id?: string; full_name: string; email: string; phone?: string | null;
-          requested_role: AppRole; message?: string | null;
+          requested_role: AppRole; message?: string | null; user_id?: string | null;
         };
         Update: {
           status?: string; reviewed_by?: string | null; reviewed_at?: string | null; denial_reason?: string | null;
