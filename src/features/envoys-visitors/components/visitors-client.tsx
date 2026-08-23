@@ -2,12 +2,13 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Download, RotateCcw, Users } from "lucide-react";
+import { Search, Download, RotateCcw, Users, Filter, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { restoreVisitorAction, exportVisitorsCsvAction } from "../actions/envoys-visitors-actions";
+import { StatCard } from "@/components/shared/stat-card";
 import { downloadCsv } from "@/lib/csv";
 import { genderTag } from "@/features/call-pipeline/constants";
 import type { EnvoysVisitorRow } from "../services/envoys-visitors-service";
@@ -53,9 +54,9 @@ export function VisitorsClient({ rows }: { rows: EnvoysVisitorRow[] }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-3">
-        <StatCard label="Total Visitors" value={rows.length} />
-        <StatCard label="Matching Search" value={filtered.length} />
-        <StatCard label="Selected" value={selected.size} />
+        <StatCard label="Total Visitors" value={rows.length} icon={Users} />
+        <StatCard label="Matching Search" value={filtered.length} icon={Filter} />
+        <StatCard label="Selected" value={selected.size} icon={CheckCircle2} tone={selected.size > 0 ? "success" : "default"} />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -103,15 +104,6 @@ export function VisitorsClient({ rows }: { rows: EnvoysVisitorRow[] }) {
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <p className="text-xl font-semibold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

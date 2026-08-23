@@ -71,7 +71,7 @@ export function ResetPasswordForm() {
           <CheckCircle2 size={28} />
         </div>
         <div>
-          <h1 className="font-display text-2xl font-semibold">Password updated</h1>
+          <h1 className="font-display text-xl font-semibold">Password updated</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">Taking you to sign in…</p>
         </div>
       </div>
@@ -81,7 +81,7 @@ export function ResetPasswordForm() {
   if (invalid) {
     return (
       <div>
-        <h1 className="font-display text-2xl font-semibold">Link expired</h1>
+        <h1 className="font-display text-xl font-semibold">Link expired</h1>
         <p className="mt-1.5 text-sm text-muted-foreground">This password reset link is invalid or has expired. Request a new one from the sign-in page.</p>
       </div>
     );
@@ -93,7 +93,7 @@ export function ResetPasswordForm() {
 
   return (
     <>
-      <h1 className="font-display text-2xl font-semibold">Set a new password</h1>
+      <h1 className="font-display text-xl font-semibold">Set a new password</h1>
       <p className="mt-1 mb-6 text-sm text-muted-foreground">Choose a new password for your account.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>

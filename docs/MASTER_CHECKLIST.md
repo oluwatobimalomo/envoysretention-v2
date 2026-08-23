@@ -201,7 +201,20 @@ Went looking specifically for the same bug *pattern* that caused the `expteam` i
 - [x] **Swept the whole codebase for the two bug patterns already found once**: zero remaining `ComingSoon` placeholders anywhere in the app now (confirmed via grep, not assumption), zero remaining locale-dependent date formatting, zero TODO/FIXME markers left in source
 - [x] Confirmed all 17 migration files are present and sequential with no gaps (0001–0017)
 
+## ✅ Sidebar typography, shared StatCard, and a real V1 GitHub re-audit — DONE
+- [x] **Real V1 comparison, not guesswork**: cloned `oluwatobimalomo/envoys-dashboard` directly and extracted every component V1 defines (grep on `^function ComponentName(`) plus every Supabase table it queries, cross-referenced against V2. Confirmed no major undiscovered gaps. Two clarifications:
+  - `CallBackQueue` is a dedicated V1 sidebar page ("Call Backs") that V2 only offers as a filter tab inside "My Calls" — small, real gap, not yet built as a standalone page
+  - `PresentationViewer` (a name I hadn't seen before) turned out to be the public-facing half of the already-flagged Testimony Projector, not a new feature
+  - `app_users` (V1's own custom login table) is intentionally not replicated — V2 correctly uses real Supabase Auth instead, a deliberate upgrade, not a gap
+  - Only two genuinely new table names surfaced (`birthday_wishes`, `testimony_presentations`), both belonging to already-known deferred features
+- [x] Sidebar section headers were `text-xs` while nav items were `text-sm` — a real, confirmed size mismatch, not a subjective complaint. Headers now match item size; hierarchy preserved via color/weight instead of size.
+- [x] Built a shared `StatCard` component (icon circle, tone-based coloring, optional link) and replaced **7 separate duplicate/inconsistent inline implementations** across Assign Calls, Assign New Converts, Potential Envoys, Connect Centre, VIP Contact, Envoys Visitors, and My Calls
+- [x] Confirmed Members Care's bulk CSV import is intact in code — it's intentionally gated to `admin`/`soulcareadmin` roles, so it's invisible to other roles by design (likely explains what was seen while testing)
+- [x] H1 title consistency swept **twice** — first pass only checked `page.tsx` files and missed component-level H1s; broadened to the whole `src/` tree and found 4 more inconsistent instances. All 63 H1s in the app now share one identical class.
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
+
 ## Next task
+Minor, not urgent: build `CallBackQueue` as its own dedicated page (currently only a filter tab). Otherwise, awaiting further testing feedback.
 None queued — this was the final closeout sweep before your testing pass. See "STATE OF THE APP" below for what's still genuinely deferred (not missed, deferred on purpose) and what to watch for.
 Awaiting your testing feedback.
 Module 12 (remainder) — the rest of Admin. Most of it (access requests, approve/deny, direct user creation) already shipped when fixing the login page. After that: Module 5b (Membership Records) and Module 13 (Reports & Dashboards with real charts) are the two largest remaining gaps.

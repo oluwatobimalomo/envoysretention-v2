@@ -12,7 +12,7 @@ export function MembersCareClient({ total, isAdmin }: { total: number; isAdmin: 
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Members Care</h1>
+          <h1 className="font-display text-xl font-semibold">Members Care</h1>
           <p className="text-sm text-muted-foreground">{total} member{total !== 1 ? "s" : ""} on record — Stewards are on their own page.</p>
         </div>
         {isAdmin && (

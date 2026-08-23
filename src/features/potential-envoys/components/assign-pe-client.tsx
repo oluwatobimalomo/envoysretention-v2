@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, UserCheck, GraduationCap, Download } from "lucide-react";
+import { Search, UserCheck, GraduationCap, Download, Users, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -11,6 +11,7 @@ import { assignPeAction, bulkAssignPeAction, unassignPeAction, exportPotentialEn
 import { peComplete } from "../constants";
 import { genderTag } from "@/features/call-pipeline/constants";
 import { AssignmentControl } from "@/components/shared/assignment-control";
+import { StatCard } from "@/components/shared/stat-card";
 import { downloadCsv } from "@/lib/csv";
 import type { EnrichedPotentialEnvoy } from "../services/potential-envoys-service";
 import { cn } from "@/lib/utils";
@@ -75,10 +76,10 @@ export function AssignPeClient({ rows, teamMembers }: { rows: EnrichedPotentialE
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Total" value={rows.length} />
-        <StatCard label="Assigned" value={rows.filter((r) => r.assignment).length} />
-        <StatCard label="Graduated" value={rows.filter((r) => r.promoted_to_membership).length} />
-        <StatCard label="5 Weeks Complete" value={rows.filter((r) => peComplete(r.fbRows)).length} />
+        <StatCard label="Total" value={rows.length} icon={Users} />
+        <StatCard label="Assigned" value={rows.filter((r) => r.assignment).length} icon={UserCheck} tone="success" />
+        <StatCard label="Graduated" value={rows.filter((r) => r.promoted_to_membership).length} icon={GraduationCap} tone="gold" />
+        <StatCard label="5 Weeks Complete" value={rows.filter((r) => peComplete(r.fbRows)).length} icon={CheckCircle2} tone="success" />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-3">
@@ -124,15 +125,6 @@ export function AssignPeClient({ rows, teamMembers }: { rows: EnrichedPotentialE
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <p className="text-xl font-semibold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

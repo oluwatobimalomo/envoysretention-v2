@@ -17,7 +17,7 @@ export default function PublicRegisterPage() {
       <div className="w-full max-w-lg">
         <div className="mb-6 flex flex-col items-center gap-2 text-center">
           <BrandMark size={72} />
-          <h1 className="text-xl font-semibold">Welcome to The Envoys!</h1>
+          <h1 className="font-display text-xl font-semibold">Welcome to The Envoys!</h1>
           <p className="text-sm text-muted-foreground">We&apos;re so glad you&apos;re here. Tell us a bit about yourself.</p>
         </div>
         <div className="rounded-xl border bg-card p-6">

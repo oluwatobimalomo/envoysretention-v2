@@ -42,7 +42,7 @@ export default function LoginPage() {
           <div className="mb-8 flex flex-col items-start gap-4 lg:hidden">
             <BrandMark size={44} />
           </div>
-          <h1 className="font-display text-2xl font-semibold">Welcome back</h1>
+          <h1 className="font-display text-xl font-semibold">Welcome back</h1>
           <p className="mt-1 mb-7 text-sm text-muted-foreground">Sign in to continue to your dashboard</p>
           <LoginForm />
           <p className="mt-6 text-center text-sm text-muted-foreground">

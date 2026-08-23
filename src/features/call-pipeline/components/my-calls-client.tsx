@@ -6,6 +6,7 @@ import { Phone, CheckCircle2, RefreshCw, Flag, Calendar, MessageCircle, Clock } 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LogFeedbackDialog, type ExistingWeekFeedback } from "./log-feedback-dialog";
+import { StatCard } from "@/components/shared/stat-card";
 import { genderTag, nextWeek, normaliseStatus, pipelineComplete, weeksLogged, waLink, type WeekRow } from "../constants";
 import type { EnrichedFirstTimer } from "../services/call-pipeline-service";
 import { cn } from "@/lib/utils";
@@ -79,10 +80,10 @@ export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Assigned to Me" value={rows.length} icon={Phone} borderColor="var(--brand-green)" />
-        <StatCard label="Pipeline Complete" value={complete.length} icon={CheckCircle2} borderColor="var(--brand-green)" />
-        <StatCard label="Call Backs" value={callback.length} icon={RefreshCw} borderColor="var(--brand-gold)" />
-        <StatCard label="Flagged" value={flagged.length} icon={Flag} accent="text-destructive" borderColor="var(--destructive)" />
+        <StatCard label="Assigned to Me" value={rows.length} icon={Phone} tone="success" />
+        <StatCard label="Pipeline Complete" value={complete.length} icon={CheckCircle2} tone="success" />
+        <StatCard label="Call Backs" value={callback.length} icon={RefreshCw} tone="gold" />
+        <StatCard label="Flagged" value={flagged.length} icon={Flag} tone="destructive" />
       </div>
 
       {dueToday.length > 0 && (
@@ -211,18 +212,6 @@ export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]
           onLogged={() => { setDialogTarget(null); router.refresh(); }}
         />
       )}
-    </div>
-  );
-}
-
-function StatCard({ label, value, icon: Icon, accent, borderColor }: { label: string; value: number; icon: React.ComponentType<{ size?: number }>; accent?: string; borderColor?: string }) {
-  return (
-    <div className="rounded-xl border bg-card p-4 border-l-4" style={{ borderLeftColor: borderColor }}>
-      <div className={cn("mb-2 flex size-8 items-center justify-center rounded-lg bg-accent", accent)}>
-        <Icon size={15} />
-      </div>
-      <p className="text-xl font-semibold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

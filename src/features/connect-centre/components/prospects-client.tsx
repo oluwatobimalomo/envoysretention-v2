@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { toggleConfirmedAction, exportProspectsCsvAction } from "../actions/connect-centre-actions";
 import { CONNECT_CENTERS } from "@/features/call-pipeline/constants";
+import { StatCard } from "@/components/shared/stat-card";
 import { downloadCsv } from "@/lib/csv";
 import type { ProspectRow } from "../services/connect-centre-service";
 import { cn } from "@/lib/utils";
@@ -77,8 +78,8 @@ export function ProspectsClient({ rows }: { rows: ProspectRow[] }) {
     <div className="space-y-5">
       <div className="grid grid-cols-3 gap-3">
         <StatCard label="Total Prospects" value={rows.length} icon={Users} />
-        <StatCard label="Confirmed" value={confirmedCount} icon={CheckCircle2} />
-        <StatCard label="Awaiting Confirmation" value={rows.length - confirmedCount} icon={AlertCircle} />
+        <StatCard label="Confirmed" value={confirmedCount} icon={CheckCircle2} tone="success" />
+        <StatCard label="Awaiting Confirmation" value={rows.length - confirmedCount} icon={AlertCircle} tone="warning" />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 rounded-xl border border-primary/15 bg-accent/40 p-3">
@@ -143,16 +144,6 @@ export function ProspectsClient({ rows }: { rows: ProspectRow[] }) {
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function StatCard({ label, value, icon: Icon }: { label: string; value: number; icon: React.ComponentType<{ size?: number }> }) {
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <div className="mb-2 flex size-8 items-center justify-center rounded-lg bg-accent text-accent-foreground"><Icon size={15} /></div>
-      <p className="text-xl font-semibold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

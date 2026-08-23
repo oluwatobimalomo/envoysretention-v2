@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, MessageCircle, CheckCircle2, Download } from "lucide-react";
+import { Search, MessageCircle, CheckCircle2, Download, Users, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import { assignVipAction, setVipMessagedAction, unassignVipAction, exportVipCont
 import { vipWhatsAppLink } from "../constants";
 import { genderTag } from "@/features/call-pipeline/constants";
 import { AssignmentControl } from "@/components/shared/assignment-control";
+import { StatCard } from "@/components/shared/stat-card";
 import { downloadCsv } from "@/lib/csv";
 import type { EnrichedVip } from "../services/vip-contact-service";
 import { cn } from "@/lib/utils";
@@ -85,10 +86,10 @@ export function VipContactClient({
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Total VIPs" value={rows.length} />
-        <StatCard label="Assigned" value={assignedCount} />
-        <StatCard label="Messaged" value={messagedCount} />
-        <StatCard label="Not Messaged" value={rows.length - messagedCount} />
+        <StatCard label="Total VIPs" value={rows.length} icon={Users} />
+        <StatCard label="Assigned" value={assignedCount} icon={UserCheck} tone="success" />
+        <StatCard label="Messaged" value={messagedCount} icon={MessageCircle} tone="success" />
+        <StatCard label="Not Messaged" value={rows.length - messagedCount} icon={CheckCircle2} tone="warning" />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -144,15 +145,6 @@ export function VipContactClient({
           );
         })}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <p className="text-xl font-semibold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

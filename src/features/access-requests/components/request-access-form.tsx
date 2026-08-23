@@ -41,7 +41,7 @@ export function RequestAccessForm() {
           <CheckCircle2 size={28} />
         </div>
         <div>
-          <h1 className="font-display text-2xl font-semibold">Request sent</h1>
+          <h1 className="font-display text-xl font-semibold">Request sent</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
             Your account is ready — you just need an admin to approve access. Once they do, sign in with the email and password you just set. No further action needed for now.
           </p>
@@ -52,7 +52,7 @@ export function RequestAccessForm() {
 
   return (
     <>
-      <h1 className="font-display text-2xl font-semibold">Request access</h1>
+      <h1 className="font-display text-xl font-semibold">Request access</h1>
       <p className="mt-1 mb-6 text-sm text-muted-foreground">Set up your login now — an admin just needs to approve it before you can sign in.</p>
 
       <form id="request-access-form" onSubmit={handleSubmit(onValid)} className="space-y-4" noValidate>

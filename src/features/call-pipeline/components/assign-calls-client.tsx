@@ -2,13 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, UserCheck } from "lucide-react";
+import { Search, UserCheck, Phone, CheckCircle2, UserX, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
 import { toast } from "sonner";
 import { assignCallAction, bulkAssignCallsAction, unassignCallAction } from "../actions/call-pipeline-actions";
 import { AssignmentControl } from "@/components/shared/assignment-control";
+import { StatCard } from "@/components/shared/stat-card";
 import { genderTag, pipelineComplete, type WeekRow } from "../constants";
 import type { EnrichedFirstTimer } from "../services/call-pipeline-service";
 import { cn } from "@/lib/utils";
@@ -81,10 +82,10 @@ export function AssignCallsClient({
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Total" value={rows.length} />
-        <StatCard label="Assigned" value={assignedCount} />
-        <StatCard label="Unassigned" value={unassignedCount} />
-        <StatCard label="Complete" value={rows.filter((r) => pipelineComplete(r.fbRows as WeekRow[])).length} />
+        <StatCard label="Total" value={rows.length} icon={Users} />
+        <StatCard label="Assigned" value={assignedCount} icon={CheckCircle2} tone="success" />
+        <StatCard label="Unassigned" value={unassignedCount} icon={UserX} tone="warning" />
+        <StatCard label="Complete" value={rows.filter((r) => pipelineComplete(r.fbRows as WeekRow[])).length} icon={Phone} tone="success" />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-3">
@@ -141,15 +142,6 @@ export function AssignCallsClient({
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <p className="text-xl font-semibold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

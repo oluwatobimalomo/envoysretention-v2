@@ -45,7 +45,7 @@ export function ForgotPasswordForm() {
           <CheckCircle2 size={28} />
         </div>
         <div>
-          <h1 className="font-display text-2xl font-semibold">Check your email</h1>
+          <h1 className="font-display text-xl font-semibold">Check your email</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
             If an account exists for that address, we&apos;ve sent a link to reset your password. It may take a minute to arrive — check your spam folder too.
           </p>
@@ -56,7 +56,7 @@ export function ForgotPasswordForm() {
 
   return (
     <>
-      <h1 className="font-display text-2xl font-semibold">Forgot password?</h1>
+      <h1 className="font-display text-xl font-semibold">Forgot password?</h1>
       <p className="mt-1 mb-6 text-sm text-muted-foreground">Enter your email and we&apos;ll send you a link to reset it.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>

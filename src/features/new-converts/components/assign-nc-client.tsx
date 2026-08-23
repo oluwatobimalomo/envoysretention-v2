@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, UserCheck, Download } from "lucide-react";
+import { Search, UserCheck, Download, Users, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -11,6 +11,7 @@ import { assignNcAction, bulkAssignNcAction, unassignNcAction, exportNewConverts
 import { ncComplete } from "../constants";
 import { ncGenderTag } from "../constants";
 import { AssignmentControl } from "@/components/shared/assignment-control";
+import { StatCard } from "@/components/shared/stat-card";
 import { downloadCsv } from "@/lib/csv";
 import type { EnrichedNewConvert } from "../services/new-converts-service";
 import { cn } from "@/lib/utils";
@@ -74,9 +75,9 @@ export function AssignNcClient({ rows, teamMembers }: { rows: EnrichedNewConvert
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <StatCard label="Total" value={rows.length} />
-        <StatCard label="Assigned" value={rows.filter((r) => r.assignment).length} />
-        <StatCard label="Completed" value={rows.filter((r) => ncComplete(r.fbRows) && r.envoys_training_completed).length} />
+        <StatCard label="Total" value={rows.length} icon={Users} />
+        <StatCard label="Assigned" value={rows.filter((r) => r.assignment).length} icon={UserCheck} tone="success" />
+        <StatCard label="Completed" value={rows.filter((r) => ncComplete(r.fbRows) && r.envoys_training_completed).length} icon={CheckCircle2} tone="success" />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-3">
@@ -122,15 +123,6 @@ export function AssignNcClient({ rows, teamMembers }: { rows: EnrichedNewConvert
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <p className="text-xl font-semibold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

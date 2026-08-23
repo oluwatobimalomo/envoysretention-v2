@@ -42,7 +42,7 @@ export function SidebarNav({ sections, onNavigate }: { sections: NavSection[]; o
               return n;
             })}
           >
-            <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-xs font-semibold tracking-wide text-sidebar-foreground/50 hover:text-sidebar-foreground/80">
+            <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold tracking-wide text-sidebar-foreground/55 hover:text-sidebar-foreground/85">
               {title}
               <ChevronDown size={14} className={cn("transition-transform", open && "rotate-180")} />
             </CollapsibleTrigger>
