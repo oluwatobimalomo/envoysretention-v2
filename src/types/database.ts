@@ -381,6 +381,16 @@ export interface Database {
         Update: { membership_status?: string; };
         Relationships: [];
       };
+      envoys_visitors: {
+        Row: {
+          id: string; original_first_timer_id: string; full_name: string; phone: string | null;
+          gender: string | null; life_stage: string | null; natural_groups: string[] | null;
+          moved_at: string; restored_at: string | null;
+        };
+        Insert: never;
+        Update: { restored_at?: string | null; };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

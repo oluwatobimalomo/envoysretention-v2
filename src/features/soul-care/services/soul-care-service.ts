@@ -120,3 +120,20 @@ export const soulCareService = {
     return rows.map((r) => ({ ...r, daysOpen: Math.floor((now - new Date(r.created_at).getTime()) / 86_400_000) }));
   },
 };
+
+export async function listAllVisitations({ dateFrom, dateTo, status }: { dateFrom?: string; dateTo?: string; status?: string } = {}) {
+  const supabase = await createClient();
+  let query = supabase
+    .from("soul_care_visits")
+    .select("*, soul_care_contacts(full_name, phone, gender, marital_status, life_stage)")
+    .order("created_at", { ascending: false })
+    .limit(500);
+  if (dateFrom) query = query.gte("visit_date", dateFrom);
+  if (dateTo) query = query.lte("visit_date", dateTo);
+  if (status) query = query.eq("visit_status", status);
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as (VisitRow & {
+    soul_care_contacts: { full_name: string; phone: string; gender: string | null; marital_status: string | null; life_stage: string | null } | null;
+  })[];
+}

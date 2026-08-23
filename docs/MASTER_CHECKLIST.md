@@ -191,6 +191,17 @@ Modules 1–13 (Foundation, First-Timers, Call Pipeline, VIP Contact, Soul Care,
 ## Recommended testing approach
 Go role by role (all 11), and for each: log in, click through every sidebar item, try the core create/edit/assign/export actions, and compare against what that role could do in V1 if you have access to it side-by-side. Report back anything that's missing, wrong, or looks off — exactly like the `expteam` and hydration issues you already caught.
 
+## ✅ Final pre-testing sweep — found and closed 2 more real gaps
+Went looking specifically for the same bug *pattern* that caused the `expteam` issue — a nav item pointing at a route that was never actually built — rather than trusting the checklist's own claims.
+- [x] **Found**: `/experience/visitors` ("Envoys Visitors", Admin + Experience Admin) and `/soul-care/visitations` ("Visitations", Admin) were still bare `ComingSoon` placeholders despite being live links in those roles' sidebars. Confirmed against V1's exact source before building — not guessed.
+- [x] SQL `0017_envoys_visitors.sql`: `envoys_visitors` table + RLS, **auto-populated by a trigger** on `pipeline_overviews` (same pattern as Connect Centre) — whenever a VIP Retention Overview does NOT recommend membership, that person is archived here automatically
+- [x] `/experience/visitors` — read-only archive with search, select-then-export CSV, and a "Restore" action (clears their overview so they re-enter the active pipeline for a fresh recommendation)
+- [x] `/soul-care/visitations` — admin-wide, unscoped view of every Soul Care visit ever logged (distinct from "My Visits"/"Queue," which are scoped to assignment) — search, status filter, expandable rows with full visit detail
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
+- [x] **Swept the whole codebase for the two bug patterns already found once**: zero remaining `ComingSoon` placeholders anywhere in the app now (confirmed via grep, not assumption), zero remaining locale-dependent date formatting, zero TODO/FIXME markers left in source
+- [x] Confirmed all 17 migration files are present and sequential with no gaps (0001–0017)
+
 ## Next task
+None queued — this was the final closeout sweep before your testing pass. See "STATE OF THE APP" below for what's still genuinely deferred (not missed, deferred on purpose) and what to watch for.
 Awaiting your testing feedback.
 Module 12 (remainder) — the rest of Admin. Most of it (access requests, approve/deny, direct user creation) already shipped when fixing the login page. After that: Module 5b (Membership Records) and Module 13 (Reports & Dashboards with real charts) are the two largest remaining gaps.
