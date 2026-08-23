@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, UserPlus, CheckCircle, Download, AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { formatTime } from "@/lib/format-date";
 import { toast } from "sonner";
 import { searchFamiliesAction, checkInAction, checkOutAction, exportAttendanceAction } from "../actions/megastars-actions";
 import { AddMegastarDialog } from "./add-megastar-dialog";
@@ -163,7 +164,7 @@ export function CheckInOutClient({ service, activeList }: { service: ServiceRow 
               <div>
                 <p className="font-medium">{row.child_name}</p>
                 <p className="text-xs text-muted-foreground">{row.child_class ?? "—"} · Dropped off by {row.guardian_name}</p>
-                <p className="text-xs text-muted-foreground">Checked in {new Date(row.check_in_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                <p className="text-xs text-muted-foreground">Checked in {formatTime(row.check_in_time)}</p>
               </div>
               <Button size="sm" variant="outline" onClick={() => handleCheckOut(row)} disabled={isPending}><CheckCircle size={13} /> Check Out</Button>
             </div>

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, X, Copy, ShieldCheck, ShieldOff, Clock, KeyRound } from "lucide-react";
+import { formatDateTime } from "@/lib/format-date";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -103,7 +104,7 @@ export function AdminUsersClient({ pendingRequests, profiles }: { pendingRequest
                   <p className="text-xs text-muted-foreground">{req.email}{req.phone ? ` · ${req.phone}` : ""}</p>
                   <p className="mt-1 text-xs"><Badge variant="secondary">{ROLE_META[req.requested_role as AppRole]?.label ?? req.requested_role}</Badge></p>
                   {req.message && <p className="mt-2 text-sm text-muted-foreground">&ldquo;{req.message}&rdquo;</p>}
-                  <p className="mt-1.5 flex items-center gap-1 text-[11px] text-muted-foreground"><Clock size={10} /> {new Date(req.created_at).toLocaleString()}</p>
+                  <p className="mt-1.5 flex items-center gap-1 text-[11px] text-muted-foreground"><Clock size={10} /> {formatDateTime(req.created_at)}</p>
                 </div>
                 <div className="flex gap-2">
                   <Button size="sm" variant="outline" onClick={() => handleDeny(req)} disabled={isPending}><X size={13} /> Deny</Button>

@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
+import { formatDateTime } from "@/lib/format-date";
 
 export type MegastarRow = Database["public"]["Tables"]["megastars"]["Row"];
 export type GuardianRow = Database["public"]["Tables"]["megastar_guardians"]["Row"];
@@ -223,9 +224,9 @@ export const megastarsService = {
         esc(r.class_at_checkin ?? r.megastars?.class ?? ""),
         esc(r.dropoff?.full_name ?? ""),
         esc(r.dropoff?.phone ?? ""),
-        esc(r.check_in_time ? new Date(r.check_in_time).toLocaleString() : ""),
+        esc(r.check_in_time ? formatDateTime(r.check_in_time) : ""),
         esc(r.pickup?.full_name ?? r.dropoff?.full_name ?? ""),
-        esc(r.check_out_time ? new Date(r.check_out_time).toLocaleString() : "Still checked in"),
+        esc(r.check_out_time ? formatDateTime(r.check_out_time) : "Still checked in"),
       ].join(","));
     }
     return lines.join("\r\n");
