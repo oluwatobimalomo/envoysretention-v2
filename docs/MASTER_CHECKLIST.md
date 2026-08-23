@@ -151,5 +151,14 @@ Three real gaps in the access-request flow, fixed:
 - Deferred, not silently dropped: V1's PDF export (via `@react-pdf/renderer`) and the threshold-based AI-style text summary generator on the Soul Care funnel report — both are real V1 features, genuinely lower-value than the charts themselves, left for a follow-up pass
 - `/soul-care/dashboard` (built in Module 5b's design pass) still shows live counts without charts — could get the same Recharts treatment in a follow-up if wanted
 
+## ✅ Fix: Experience Team (expteam) role access gap — DONE
+Found by directly comparing V2 against V1's live production app — `expteam` had only 1 sidebar item ("My Calls") when V1 gives them 5: My Calls, Call Queue, All Feedback, Flagged, and Analytics Dashboard.
+- [x] `roles.ts` — added the 4 missing nav items to `expteam`
+- [x] Route permissions updated on `/feedback`, `/feedback/flagged`, `/experience/dashboard` to allow `expteam` (Call Queue already allowed them)
+- [x] SQL `0016_expteam_feedback_access.sql` — **the deeper bug**: even with page access granted, the `call_feedback` RLS policy was still silently restricting `expteam` to only their own assigned contacts' records, which would have made "All Feedback" quietly show a much smaller list than intended, with no visible error. Fixed at the database level.
+- [x] Restored missing UI/functionality on My Calls cards that V1 has: avatar initials, clickable `tel:` phone link, a WhatsApp quick-message icon, a Pending/In Progress/Complete status badge, a "Next: Week X" indicator next to the week pills, a "No call logs yet — start with Week 1" helper line (or last call summary once logged), and colored left-border accents on the stat cards
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
+- **Worth flagging honestly**: this was caught because you happened to test as `expteam` and compare screenshots. The original nav config (`roles.ts`) was written once in the very first commit based on my reading of V1's source, not verified role-by-role against the live app since. It's plausible other roles have similar, still-undiscovered gaps between what V2 grants and what V1 actually gave them — a full side-by-side audit (log in as each of the 11 roles in both apps, compare sidebars) would be the thorough way to rule this out completely.
+
 ## Next task
 Module 12 (remainder) — the rest of Admin. Most of it (access requests, approve/deny, direct user creation) already shipped when fixing the login page. After that: Module 5b (Membership Records) and Module 13 (Reports & Dashboards with real charts) are the two largest remaining gaps.

@@ -7,7 +7,7 @@ import { AlertCircle } from "lucide-react";
 export const metadata = { title: "Flagged" };
 
 export default async function FlaggedFeedbackPage() {
-  await requireRole(["admin", "experienceadmin"]);
+  await requireRole(["admin", "experienceadmin", "expteam"]);
   const rows = await feedbackService.listFlagged();
   const agingCount = rows.filter((r) => r.daysOpen >= 3).length;
 

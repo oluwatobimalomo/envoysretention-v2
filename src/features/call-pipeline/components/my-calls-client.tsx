@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Phone, CheckCircle2, RefreshCw, Flag, Calendar } from "lucide-react";
+import { Phone, CheckCircle2, RefreshCw, Flag, Calendar, MessageCircle, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LogFeedbackDialog, type ExistingWeekFeedback } from "./log-feedback-dialog";
-import { genderTag, nextWeek, normaliseStatus, pipelineComplete, weeksLogged, type WeekRow } from "../constants";
+import { genderTag, nextWeek, normaliseStatus, pipelineComplete, weeksLogged, waLink, type WeekRow } from "../constants";
 import type { EnrichedFirstTimer } from "../services/call-pipeline-service";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +17,10 @@ const TABS = [
   { k: "complete", label: "Complete" },
   { k: "flagged", label: "Flagged" },
 ] as const;
+
+function initials(name: string) {
+  return name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
 
 export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]; callerName: string }) {
   const router = useRouter();
@@ -75,10 +79,10 @@ export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Assigned to Me" value={rows.length} icon={Phone} />
-        <StatCard label="Pipeline Complete" value={complete.length} icon={CheckCircle2} />
-        <StatCard label="Call Backs" value={callback.length} icon={RefreshCw} />
-        <StatCard label="Flagged" value={flagged.length} icon={Flag} accent="text-destructive" />
+        <StatCard label="Assigned to Me" value={rows.length} icon={Phone} borderColor="var(--brand-green)" />
+        <StatCard label="Pipeline Complete" value={complete.length} icon={CheckCircle2} borderColor="var(--brand-green)" />
+        <StatCard label="Call Backs" value={callback.length} icon={RefreshCw} borderColor="var(--brand-gold)" />
+        <StatCard label="Flagged" value={flagged.length} icon={Flag} accent="text-destructive" borderColor="var(--destructive)" />
       </div>
 
       {dueToday.length > 0 && (
@@ -118,44 +122,77 @@ export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]
         )}
         {filtered.map((row) => {
           const week = nextWeek(row.fbRows as WeekRow[]);
+          const logged = weeksLogged(row.fbRows as WeekRow[]);
+          const complete = pipelineComplete(row.fbRows as WeekRow[]);
+          const wa = waLink(row.phone);
+          const lastFb = row.fbRows[row.fbRows.length - 1];
+          const statusLabel = complete ? "Complete" : logged.size > 0 ? "In Progress" : "Pending";
+          const statusVariant = complete ? "success" : logged.size > 0 ? "warning" : "outline";
+
           return (
             <div key={row.id} className="rounded-xl border bg-card p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-medium">{row.full_name}{genderTag(row.gender)}</p>
-                  <p className="text-xs text-muted-foreground">{row.phone} · Service {row.service_date}</p>
+                <div className="flex items-start gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-green text-xs font-semibold text-brand-gold-light">
+                    {initials(row.full_name)}
+                  </div>
+                  <div>
+                    <p className="font-medium">{row.full_name}{genderTag(row.gender)}</p>
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+                      <a href={`tel:${row.phone}`} className="text-primary hover:underline">{row.phone}</a>
+                      {wa && (
+                        <a href={wa} target="_blank" rel="noopener noreferrer" className="text-success hover:opacity-70" title="Message on WhatsApp">
+                          <MessageCircle size={13} />
+                        </a>
+                      )}
+                      <span>· Service {row.service_date}</span>
+                    </div>
+                  </div>
                 </div>
-                {week !== null ? (
-                  <Button size="sm" onClick={() => openLogDialog(row)}>Log Week {week}</Button>
-                ) : !row.overview ? (
-                  <Button size="sm" variant="gold" onClick={() => openLogDialog(row)}>Submit Overview</Button>
-                ) : (
-                  <Badge variant="success">Overview submitted</Badge>
-                )}
+                <div className="flex flex-col items-end gap-1.5">
+                  <Badge variant={statusVariant}>{statusLabel}</Badge>
+                  {week !== null ? (
+                    <Button size="sm" onClick={() => openLogDialog(row)}>Log Week {week}</Button>
+                  ) : !row.overview ? (
+                    <Button size="sm" variant="gold" onClick={() => openLogDialog(row)}>Submit Overview</Button>
+                  ) : (
+                    <Badge variant="success">Overview submitted</Badge>
+                  )}
+                </div>
               </div>
+
               <div className="mt-3 flex flex-wrap items-center gap-1.5">
                 {[1, 2, 3].map((w) => {
-                  const logged = weeksLogged(row.fbRows as WeekRow[]).has(w);
+                  const isLogged = logged.has(w);
                   return (
                     <button
                       key={w}
                       type="button"
-                      disabled={!logged}
-                      onClick={() => logged && openEditDialog(row, w)}
+                      disabled={!isLogged}
+                      onClick={() => isLogged && openEditDialog(row, w)}
                       className={cn(
                         "flex size-6 items-center justify-center rounded text-[10px] font-bold transition-opacity",
-                        logged ? "bg-success text-white hover:opacity-80 cursor-pointer" : "bg-muted text-muted-foreground cursor-default"
+                        isLogged ? "bg-success text-white hover:opacity-80 cursor-pointer" : "bg-muted text-muted-foreground cursor-default"
                       )}
-                      title={logged ? `Edit Week ${w}` : `Week ${w} not logged`}
+                      title={isLogged ? `Edit Week ${w}` : `Week ${w} not logged`}
                     >
                       W{w}
                     </button>
                   );
                 })}
-                {pipelineComplete(row.fbRows as WeekRow[]) && (
+                {week !== null && (
+                  <span className="ml-1 flex items-center gap-1 text-xs text-muted-foreground"><Clock size={11} /> Next: Week {week}</span>
+                )}
+                {complete && (
                   <span className="ml-1 flex items-center gap-1 text-xs font-medium text-success"><CheckCircle2 size={12} /> Complete</span>
                 )}
               </div>
+
+              <p className="mt-2 text-xs text-muted-foreground">
+                {lastFb
+                  ? `Last call: ${lastFb.call_status}${lastFb.notes ? ` — ${lastFb.notes}` : ""} (${lastFb.created_at.slice(0, 10)})`
+                  : "No call logs yet — start with Week 1."}
+              </p>
             </div>
           );
         })}
@@ -178,9 +215,9 @@ export function MyCallsClient({ rows, callerName }: { rows: EnrichedFirstTimer[]
   );
 }
 
-function StatCard({ label, value, icon: Icon, accent }: { label: string; value: number; icon: React.ComponentType<{ size?: number }>; accent?: string }) {
+function StatCard({ label, value, icon: Icon, accent, borderColor }: { label: string; value: number; icon: React.ComponentType<{ size?: number }>; accent?: string; borderColor?: string }) {
   return (
-    <div className="rounded-xl border bg-card p-4">
+    <div className="rounded-xl border bg-card p-4 border-l-4" style={{ borderLeftColor: borderColor }}>
       <div className={cn("mb-2 flex size-8 items-center justify-center rounded-lg bg-accent", accent)}>
         <Icon size={15} />
       </div>

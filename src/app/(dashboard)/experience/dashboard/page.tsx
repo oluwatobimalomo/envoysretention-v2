@@ -11,7 +11,7 @@ export default async function ExperienceDashboardPage({
 }: {
   searchParams: Promise<{ from?: string; to?: string }>;
 }) {
-  await requireRole(["admin", "experienceadmin"]);
+  await requireRole(["admin", "experienceadmin", "expteam"]);
   const sp = await searchParams;
   const stats = await getReportStats({ dateFrom: sp.from, dateTo: sp.to });
 

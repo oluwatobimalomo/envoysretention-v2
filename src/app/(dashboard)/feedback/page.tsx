@@ -5,7 +5,7 @@ import { CallNotesList } from "@/features/feedback/components/call-notes-list";
 export const metadata = { title: "All Feedback" };
 
 export default async function AllFeedbackPage() {
-  await requireRole(["admin", "experienceadmin"]);
+  await requireRole(["admin", "experienceadmin", "expteam"]);
   const rows = await feedbackService.listCallNotes();
 
   return (

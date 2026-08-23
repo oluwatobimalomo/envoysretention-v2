@@ -78,7 +78,13 @@ const NAV: Record<AppRole, NavItem[]> = {
     { id: "experience_dashboard", label: "Analytics Dashboard", href: "/experience/dashboard", icon: "BarChart3" },
     { id: "vip_journey_dashboard", label: "VIP Journey Dashboard", href: "/soul-care/vip-journey", icon: "Route" },
   ],
-  expteam: [{ id: "mycalls", label: "My Calls", href: "/experience/my-calls", icon: "Phone" }],
+  expteam: [
+    { id: "mycalls", label: "My Calls", href: "/experience/my-calls", icon: "Phone" },
+    { id: "callqueue", label: "Call Queue", href: "/experience/call-queue", icon: "Phone" },
+    { id: "allfeedback", label: "All Feedback", href: "/feedback", icon: "MessagesSquare" },
+    { id: "flagged", label: "Flagged", href: "/feedback/flagged", icon: "Flag" },
+    { id: "experience_dashboard", label: "Analytics Dashboard", href: "/experience/dashboard", icon: "BarChart3" },
+  ],
   soulcareadmin: [
     { id: "add_visit", label: "Add Visit", href: "/soul-care/visits/new", icon: "Home" },
     { id: "sc_assign", label: "Assign Visits", href: "/soul-care/assign", icon: "Send" },

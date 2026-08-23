@@ -56,3 +56,14 @@ export function genderTag(gender: string | null | undefined): string {
   if (gender === "Female") return " (F)";
   return "";
 }
+
+/** Plain WhatsApp deep link (no preset message) — for quick-message icons
+ *  next to a phone number throughout the Experience Team views. VIP
+ *  Contact has its own templated version in features/vip-contact. */
+export function waLink(phone: string | null | undefined): string | null {
+  if (!phone) return null;
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 7) return null;
+  const intl = digits.startsWith("0") ? `234${digits.slice(1)}` : digits;
+  return `https://wa.me/${intl}`;
+}
