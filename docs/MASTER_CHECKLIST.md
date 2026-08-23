@@ -143,5 +143,13 @@ Three real gaps in the access-request flow, fixed:
 - [x] **Every Soul Care nav item is now a real page** — this was the last set of "Coming Soon" placeholders in the entire app tied to a specific, named module
 - Note: V1's dedicated full-page "Member Profile" (visit history deep-dive per member) not ported — Add to Pool + inline status toggle cover the actionable core; flagged as a future nicety, not a silent drop
 
+## ✅ Module 13 (core) — Reports & Dashboards — DONE
+- [x] `/reports` — full retention analytics: stat cards (First-Timers, Calls Logged, Conversion Rate, Flagged), VIP Membership Decision donut, Call Outcomes bar chart, Weekly Call Activity trend line, **New Golden Envoys** scrollable table with CSV export, Returning Likelihood + Experience Rating bars, Gender Split donut, Caller Leaderboard, Areas of Interest breakdown — all real Recharts visualizations over live Supabase data, with a shared date-range filter across every chart (matches V1's Report component)
+- [x] `/experience/dashboard` — a leaner Experience-Team-focused subset of the same underlying stats (VIP Decision Split, Call Outcomes, Weekly Trend, Caller Leaderboard, Returning Likelihood)
+- [x] One shared `getReportStats()` aggregation service powers both pages — a single query pass over `first_timers`, `call_feedback`, and `pipeline_overviews`, not duplicated logic
+- [x] Verified: `tsc --noEmit`, `eslint --max-warnings=0`, `next build` all clean across all 62 routes
+- Deferred, not silently dropped: V1's PDF export (via `@react-pdf/renderer`) and the threshold-based AI-style text summary generator on the Soul Care funnel report — both are real V1 features, genuinely lower-value than the charts themselves, left for a follow-up pass
+- `/soul-care/dashboard` (built in Module 5b's design pass) still shows live counts without charts — could get the same Recharts treatment in a follow-up if wanted
+
 ## Next task
 Module 12 (remainder) — the rest of Admin. Most of it (access requests, approve/deny, direct user creation) already shipped when fixing the login page. After that: Module 5b (Membership Records) and Module 13 (Reports & Dashboards with real charts) are the two largest remaining gaps.
