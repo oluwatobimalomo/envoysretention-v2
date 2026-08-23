@@ -47,7 +47,7 @@ export default async function SoulCareDashboardPage() {
     <div className="space-y-8">
       <div>
         <p className="font-display text-sm font-medium text-brand-gold-foreground">{greeting()}</p>
-        <h1 className="font-display text-2xl font-semibold">{user.fullName.split(" ")[0]}, here&apos;s the Soul Care snapshot</h1>
+        <h1 className="font-display text-xl font-semibold">{user.fullName.split(" ")[0]}, here&apos;s the Soul Care snapshot</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {potentialEnvoys ?? 0} Potential Envoy{potentialEnvoys === 1 ? "" : "s"} on track · {newConvertsActive ?? 0} New Convert{newConvertsActive === 1 ? "" : "s"} being followed up
         </p>

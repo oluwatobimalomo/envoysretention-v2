@@ -12,7 +12,7 @@ export default async function ImportFirstTimersPage() {
     <div className="mx-auto max-w-2xl space-y-5">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild><Link href="/first-timers"><ArrowLeft size={16} /></Link></Button>
-        <h1 className="text-xl font-semibold">Import First-Timers</h1>
+        <h1 className="font-display text-xl font-semibold">Import First-Timers</h1>
       </div>
       <CsvImport />
     </div>

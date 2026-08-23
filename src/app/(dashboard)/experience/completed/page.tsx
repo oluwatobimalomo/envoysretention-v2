@@ -18,7 +18,7 @@ export default async function CompletedPipelinesPage({
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Completed Pipelines</h1>
+        <h1 className="font-display text-xl font-semibold">Completed Pipelines</h1>
         <p className="text-sm text-muted-foreground">{rows.length} VIP Retention Overview{rows.length !== 1 ? "s" : ""} submitted</p>
       </div>
 

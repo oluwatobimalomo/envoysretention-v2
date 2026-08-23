@@ -15,7 +15,7 @@ export default async function AssignVisitsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Assign Visits</h1>
+        <h1 className="font-display text-xl font-semibold">Assign Visits</h1>
         <p className="text-sm text-muted-foreground">Assign Soul Care contacts to team members for ongoing pastoral visits.</p>
       </div>
       <AssignVisitsClient rows={rows} teamMembers={teamMembers} />

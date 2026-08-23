@@ -30,7 +30,7 @@ export default async function ReportsPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Report</h1>
+          <h1 className="font-display text-xl font-semibold">Report</h1>
           <p className="text-sm text-muted-foreground">Full retention analytics across First-Timers and the call pipeline.</p>
         </div>
         <ReportDateFilter />

@@ -27,7 +27,7 @@ export default async function EditFirstTimerPage({ params }: { params: Promise<{
     <div className="mx-auto max-w-2xl space-y-5">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild><Link href="/first-timers"><ArrowLeft size={16} /></Link></Button>
-        <h1 className="text-xl font-semibold">Edit — {record.full_name}</h1>
+        <h1 className="font-display text-xl font-semibold">Edit — {record.full_name}</h1>
       </div>
       <FirstTimerForm action={boundAction} initialData={record} />
     </div>

@@ -26,7 +26,7 @@ export default async function ExperienceDashboardPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Experience Analytics Dashboard</h1>
+          <h1 className="font-display text-xl font-semibold">Experience Analytics Dashboard</h1>
           <p className="text-sm text-muted-foreground">How the 3-week call pipeline is performing.</p>
         </div>
         <ReportDateFilter />

@@ -9,7 +9,7 @@ export default async function TestimonyQrPage() {
   return (
     <div className="mx-auto max-w-md space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Testimony QR Code</h1>
+        <h1 className="font-display text-xl font-semibold">Testimony QR Code</h1>
         <p className="text-sm text-muted-foreground">Share this at services or on social channels so members can share testimonies.</p>
       </div>
       <RegistrationQr url={`${siteUrl}/share-testimony`} />

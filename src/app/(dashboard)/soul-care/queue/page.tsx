@@ -18,7 +18,7 @@ export default async function VisitQueuePage({
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Visit Queue</h1>
+        <h1 className="font-display text-xl font-semibold">Visit Queue</h1>
         <p className="text-sm text-muted-foreground">{rows.length} contact{rows.length !== 1 ? "s" : ""} in the Soul Care pool</p>
       </div>
       <QueueToolbar />

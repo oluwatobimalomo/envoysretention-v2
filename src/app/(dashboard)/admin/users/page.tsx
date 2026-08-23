@@ -18,7 +18,7 @@ export default async function AdminUsersPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">User Management</h1>
+          <h1 className="font-display text-xl font-semibold">User Management</h1>
           <p className="text-sm text-muted-foreground">Review access requests and manage team logins.</p>
         </div>
         <Button asChild size="sm"><Link href="/admin/users/new"><UserPlus size={14} /> Add User Directly</Link></Button>

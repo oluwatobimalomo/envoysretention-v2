@@ -12,7 +12,7 @@ export default async function MyCallsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">My Calls</h1>
+        <h1 className="font-display text-xl font-semibold">My Calls</h1>
         <p className="text-sm text-muted-foreground">{mine.length} contact{mine.length !== 1 ? "s" : ""} assigned to you</p>
       </div>
       <MyCallsClient rows={mine} callerName={user.fullName} />

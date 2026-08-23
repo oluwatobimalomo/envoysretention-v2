@@ -11,7 +11,7 @@ export default async function ConnectCentrePage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Prospective Connect Members</h1>
+        <h1 className="font-display text-xl font-semibold">Prospective Connect Members</h1>
         <p className="text-sm text-muted-foreground">VIPs recommended to a Connect Centre — confirm once they&apos;re added to the centre&apos;s WhatsApp group.</p>
       </div>
       <ProspectsClient rows={rows} />

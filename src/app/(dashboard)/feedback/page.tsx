@@ -11,7 +11,7 @@ export default async function AllFeedbackPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">All Feedback</h1>
+        <h1 className="font-display text-xl font-semibold">All Feedback</h1>
         <p className="text-sm text-muted-foreground">{rows.length} note{rows.length !== 1 ? "s" : ""} logged during Experience Team calls.</p>
       </div>
       <CallNotesList rows={rows} />

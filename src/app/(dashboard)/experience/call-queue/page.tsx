@@ -11,7 +11,7 @@ export default async function CallQueuePage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Call Queue</h1>
+        <h1 className="font-display text-xl font-semibold">Call Queue</h1>
         <p className="text-sm text-muted-foreground">Every first-timer in the call pipeline, by status.</p>
       </div>
       <CallQueueClient rows={rows} />

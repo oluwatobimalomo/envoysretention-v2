@@ -17,7 +17,7 @@ export default async function TestimoniesPage({
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Testimonies</h1>
+        <h1 className="font-display text-xl font-semibold">Testimonies</h1>
         <p className="text-sm text-muted-foreground">{entries.length} testimon{entries.length !== 1 ? "ies" : "y"} shared during Soul Care visitations</p>
       </div>
       <TestimoniesToolbar />

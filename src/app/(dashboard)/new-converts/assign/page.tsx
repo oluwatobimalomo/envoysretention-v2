@@ -15,7 +15,7 @@ export default async function AssignNewConvertsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Assign New Converts</h1>
+        <h1 className="font-display text-xl font-semibold">Assign New Converts</h1>
         <p className="text-sm text-muted-foreground">Assign New Converts to the Soul Care team for their 3-month follow-up.</p>
       </div>
       <AssignNcClient rows={rows} teamMembers={teamMembers} />

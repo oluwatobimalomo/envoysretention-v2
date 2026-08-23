@@ -11,7 +11,7 @@ export default async function VisitationsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Visitations</h1>
+        <h1 className="font-display text-xl font-semibold">Visitations</h1>
         <p className="text-sm text-muted-foreground">{rows.length} visit{rows.length !== 1 ? "s" : ""} logged across the whole Soul Care team.</p>
       </div>
       <VisitationsClient rows={rows} />

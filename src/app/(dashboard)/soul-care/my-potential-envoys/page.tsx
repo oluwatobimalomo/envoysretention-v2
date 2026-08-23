@@ -12,7 +12,7 @@ export default async function MyPotentialEnvoysPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">My Potential Envoys</h1>
+        <h1 className="font-display text-xl font-semibold">My Potential Envoys</h1>
         <p className="text-sm text-muted-foreground">{mine.length} assigned to you</p>
       </div>
       <MyPotentialEnvoysClient rows={mine} callerName={user.fullName} />

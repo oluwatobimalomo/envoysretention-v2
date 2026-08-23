@@ -15,7 +15,7 @@ export default async function VipContactPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">VIP Contact</h1>
+        <h1 className="font-display text-xl font-semibold">VIP Contact</h1>
         <p className="text-sm text-muted-foreground">Send a personal WhatsApp welcome message to every first-timer.</p>
       </div>
       <VipContactClient rows={rows} teamMembers={teamMembers} />

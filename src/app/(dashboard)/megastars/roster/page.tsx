@@ -12,7 +12,7 @@ export default async function MegastarsRosterPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Megastars Roster</h1>
+        <h1 className="font-display text-xl font-semibold">Megastars Roster</h1>
         <p className="text-sm text-muted-foreground">{rows.filter((r) => r.is_active).length} children currently active</p>
       </div>
       <RosterClient rows={rows} isAdmin={isAdmin} />

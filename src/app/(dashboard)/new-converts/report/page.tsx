@@ -26,7 +26,7 @@ export default async function NewConvertsReportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold">New Converts Retention</h1>
+        <h1 className="font-display text-xl font-semibold">New Converts Retention</h1>
         <p className="text-sm text-muted-foreground">Snapshot of the current New Converts pool and follow-up progress.</p>
       </div>
 

@@ -12,7 +12,7 @@ export default async function MyVisitsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">My Visits</h1>
+        <h1 className="font-display text-xl font-semibold">My Visits</h1>
         <p className="text-sm text-muted-foreground">{mine.length} contact{mine.length !== 1 ? "s" : ""} assigned to you</p>
       </div>
       <MyVisitsClient rows={mine} loggedBy={user.fullName} />

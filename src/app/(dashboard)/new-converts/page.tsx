@@ -18,7 +18,7 @@ export default async function NewConvertsRegistryPage({
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">New Converts Registry</h1>
+        <h1 className="font-display text-xl font-semibold">New Converts Registry</h1>
         <p className="text-sm text-muted-foreground">{total} record{total !== 1 ? "s" : ""} total</p>
       </div>
       <RegistryToolbar canManage={canManage} />

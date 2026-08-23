@@ -15,7 +15,7 @@ export default async function FlaggedFeedbackPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Flagged for Pastoral</h1>
+          <h1 className="font-display text-xl font-semibold">Flagged for Pastoral</h1>
           <p className="text-sm text-muted-foreground">{rows.length} record{rows.length !== 1 ? "s" : ""} requiring pastoral attention</p>
         </div>
         {agingCount > 0 && <Badge variant="destructive"><AlertCircle size={11} /> {agingCount} aging 3+ days</Badge>}

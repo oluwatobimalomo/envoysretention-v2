@@ -15,7 +15,7 @@ export default async function PotentialEnvoysPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Potential Envoys</h1>
+        <h1 className="font-display text-xl font-semibold">Potential Envoys</h1>
         <p className="text-sm text-muted-foreground">The 5-week track for people recommended for Membership.</p>
       </div>
       <AssignPeClient rows={rows} teamMembers={teamMembers} />

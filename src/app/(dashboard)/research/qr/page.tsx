@@ -9,7 +9,7 @@ export default async function FeedbackQrPage() {
   return (
     <div className="mx-auto max-w-md space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Feedback QR Code</h1>
+        <h1 className="font-display text-xl font-semibold">Feedback QR Code</h1>
         <p className="text-sm text-muted-foreground">Members scan this to submit anonymous service feedback.</p>
       </div>
       <RegistrationQr url={`${siteUrl}/give-feedback`} />

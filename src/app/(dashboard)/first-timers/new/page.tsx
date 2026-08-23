@@ -13,7 +13,7 @@ export default async function NewFirstTimerPage() {
     <div className="mx-auto max-w-2xl space-y-5">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild><Link href="/first-timers"><ArrowLeft size={16} /></Link></Button>
-        <h1 className="text-xl font-semibold">New First-Timer</h1>
+        <h1 className="font-display text-xl font-semibold">New First-Timer</h1>
       </div>
       <FirstTimerForm action={createFirstTimerAction} />
     </div>

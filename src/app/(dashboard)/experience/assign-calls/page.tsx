@@ -15,7 +15,7 @@ export default async function AssignCallsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Assign Calls</h1>
+        <h1 className="font-display text-xl font-semibold">Assign Calls</h1>
         <p className="text-sm text-muted-foreground">Assign new first-timers to the Experience Team for their 3-week follow-up.</p>
       </div>
       <AssignCallsClient rows={rows} teamMembers={teamMembers} />

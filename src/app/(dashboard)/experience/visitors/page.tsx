@@ -11,7 +11,7 @@ export default async function EnvoysVisitorsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Envoys Visitors</h1>
+        <h1 className="font-display text-xl font-semibold">Envoys Visitors</h1>
         <p className="text-sm text-muted-foreground">First-timers not recommended for membership — kept for reference, export, or restoration.</p>
       </div>
       <VisitorsClient rows={rows} />

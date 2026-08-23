@@ -9,7 +9,7 @@ export default async function NewConvertsQrPage() {
   return (
     <div className="mx-auto max-w-md space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">New Converts QR Code</h1>
+        <h1 className="font-display text-xl font-semibold">New Converts QR Code</h1>
         <p className="text-sm text-muted-foreground">Print or display this at the altar call for self check-in.</p>
       </div>
       <RegistrationQr url={`${siteUrl}/register-convert`} />

@@ -11,7 +11,7 @@ export default async function MegastarsServicesPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Megastars Services</h1>
+        <h1 className="font-display text-xl font-semibold">Megastars Services</h1>
         <p className="text-sm text-muted-foreground">Open a service before check-in can begin.</p>
       </div>
       <ServicesClient services={services} />

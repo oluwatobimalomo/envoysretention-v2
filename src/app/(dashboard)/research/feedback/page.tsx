@@ -17,7 +17,7 @@ export default async function ResearchFeedbackPage({
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Service Feedback</h1>
+        <h1 className="font-display text-xl font-semibold">Service Feedback</h1>
         <p className="text-sm text-muted-foreground">{entries.length} response{entries.length !== 1 ? "s" : ""} — from First-Timer forms and the public Feedback QR combined.</p>
       </div>
       <FeedbackToolbar />

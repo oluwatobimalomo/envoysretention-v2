@@ -8,7 +8,7 @@ export default async function AddVisitPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Log New Visit</h1>
+        <h1 className="font-display text-xl font-semibold">Log New Visit</h1>
         <p className="text-sm text-muted-foreground">Search for an existing contact or add a new one, then log the visit.</p>
       </div>
       <AddVisitFlow loggedBy={user.fullName} />

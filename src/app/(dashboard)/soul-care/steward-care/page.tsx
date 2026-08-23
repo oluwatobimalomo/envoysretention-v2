@@ -27,7 +27,7 @@ export default async function StewardCarePage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold">Stewards Care</h1>
+        <h1 className="font-display text-xl font-semibold">Stewards Care</h1>
         <p className="text-sm text-muted-foreground">Stewards registry — import from Members Care using the Category column.</p>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

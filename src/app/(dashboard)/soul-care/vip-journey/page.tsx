@@ -35,7 +35,7 @@ export default async function VipJourneyPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold">VIP Journey Dashboard</h1>
+        <h1 className="font-display text-xl font-semibold">VIP Journey Dashboard</h1>
         <p className="text-sm text-muted-foreground">From first hello to lasting home — where every VIP is in the retention funnel.</p>
       </div>
 
